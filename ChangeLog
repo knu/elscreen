@@ -1,0 +1,622 @@
+2007-12-30  Naoto Morishima  <naoto@morishima.net>
+
+	ElScreen 1.4.6 released.
+
+
+2007-12-29  Naoto Morishima  <naoto@morishima.net>
+
+	* elscreen.el (elscreen-delete-frame-confs): Don't call
+	elscreen-notify-screen-modification which potentially causes an
+	error when frame has been created via make-frame-on-display.
+
+2007-11-22  Naoto Morishima  <naoto@morishima.net>
+
+	* elscreen.el (elscreen-display-tab): Change type from boolean to
+	choice of boolean and integer.  t means display with automatic
+	width calculation, and integer means display with fixed width.
+	(elscreen-tab-width): Removed.
+	(elscreen-e21-tab-width,elscreen-xmas-tab-width): New functions.
+	(elscreen-e21-tab-update,elscreen-xmas-tab-update): Use them.
+	(elscreen-default-window-configuration): Set dedicated-p of
+	selected-window to nil instead of splitting it.
+
+
+2007-11-21  Naoto Morishima  <naoto@morishima.net>
+
+	* elscreen.el (elscreen-default-window-configuration): Split
+	window first to avoid error in case that the selected window is
+	dedicated.
+	(elscreen-copy-tree-1, elscreen-copy-tree): Split
+	elscreen-copy-tree to two functions, backported from trunk.
+	(elscreen-save-screen-excursion)
+        (elscreen-notify-screen-modification-suppress)
+        (elscreen-screen-modified-hook-setup)
+        (elscreen-get-alist-to-nickname): Eliminate old-style backquotes,
+        backported from trunk.
+	(elscreen-get-alist-to-nickname): Define as subst instead of
+	macro, backported from trunk.
+	(elscreen-get-screen-to-name-alist): Rewritten to improve
+	performance, backported from trunk.
+	(elscreen-kill-internal): Returns killed screen, backported from
+	trunk.
+	(elscreen-tab-display-kill-screen): Now it's used to set the
+	location of the icon to kill a screen.  Possible values are:
+	'left, 'right and nil (to hide icons). Backported from trunk.
+	(elscreen-e21-tab-create-keymap): Take arguments forming a
+	sequence of KEY FUNCTION pairs, backported from trunk.
+        (elscreen-e21-tab-update): Follow above changes, and M-mouse-1 on
+        the icon [X] now calls elscreen-kill-screen-and-buffers.
+
+
+2006-12-06  Naoto Morishima  <naoto@morishima.net>
+
+	ElScreen 1.4.5 released.
+
+
+2006-12-03  Naoto Morishima  <naoto@morishima.net>
+
+	* elscreen.el (elscreen-get-screen-to-name-alist): Use
+	window-minibuffer-p instead of minibufferp, for XEmacs
+	compatibility.
+
+
+2006-12-01  Naoto Morishima  <naoto@morishima.net>
+
+	ElScreen 1.4.4 released.
+
+
+2006-11-30  Naoto Morishima  <naoto@morishima.net>
+
+	* elscreen.el (elscreen-get-screen-to-name-alist): Don't add
+	buffer name when it is minibuffer.
+
+
+2006-08-13  Naoto Morishima  <naoto@morishima.net>
+
+	* elscreen.el (elscreen-get-screen-to-name-alist): Add arguments
+	of truncate-length and padding again.  These arguments are
+	deprecated and provided for backward compativility for a while.
+	(elscreen-frame-confs): Make screen-history always have whole
+	screens.
+	(elscreen-append-screen-to-history): New function.
+	(elscreen-create-internal): Call
+	elscreen-append-screen-to-history.
+	(elscreen-get-current-screen): Simply return car of
+	screen-history.
+	(elscreen-get-previouos-screen): Simply return cadr of
+	screen-history.
+	(elscreen-kill-internal): New function.
+	(elscreen-kill, elscreen-kill-others): Use it.
+	(elscreen-clone): Check if screen is alive.
+	(elscreen-swap): Check if there are two or more screens.
+
+
+2006-08-12  Naoto Morishima  <naoto@morishima.net>
+
+	* elscreen.el (elscreen-get-conf-list, elscreen-get-conf-list)
+	(elscreen-set-conf-list, elscreen-set-current-screen)
+	(elscreen-get-current-screen, elscreen-get-previous-screen)
+	(elscreen-delete-screen-from-history, elscreen-status-label)
+	(elscreen-screen-modified-p, elscreen-set-screen-modified)
+	(elscreen-get-screen-property, elscreen-set-screen-property)
+	(elscreen-delete-screen-property)
+	(elscreen-get-window-configuration)
+	(elscreen-set-window-configuration)
+	(elscreen-get-screen-nickname, elscreen-set-screen-nickname)
+	(elscreen-delete-screen-nickname)
+	(elscreen-get-screen-to-name-alist-cache)
+	(elscreen-set-screen-to-name-alist-cache)
+	(elscreen-get-number-of-screens, elscreen-one-screen-p)
+	(elscreen-get-screen-list, elscreen-screen-live-p)
+	(elscreen-find-screen): Remove the argument to specify frame.
+	This function always affects selected-frame.
+	(elscreen-find-screens): New function.
+	(elscreen-find-screen): Rewritten with elscreen-find-screens.
+	(elscreen-find-screen-by-buffer)
+	(elscreen-find-and-goto-by-buffer): Use get-buffer-window.
+
+
+2006-08-11  Naoto Morishima  <naoto@morishima.net>
+
+	* elscreen.el (elscreen-truncate-screen-name): Fully rewritten.
+
+
+2006-07-31  Naoto Morishima  <naoto@morishima.net>
+
+	* elscreen.el (elscreen-run-screen-update-hook): Don't invoke
+	elscreen-screen-update-hook when elscreen-frame-confs is nil.
+	(elscreen-e21-menu-bar-command-entries)
+	(elscreen-xmas-menu-bar-command-entries): Add new entries.
+	(elscreen-menubar): Renamed to...
+	(elscreen-xmas-menubar): this.
+	(elscreen-xmas-tab-glyph): New variable for internal use.
+	(elscreen-xmas-tab-update): New function to support tab on XEmacs.
+	(elscreen-display-screen-number-toggle): Renamed to...
+	(elscreen-toggle-display-screen-number): this.
+	(elscreen-toggle-display-tab): New function.
+
+
+2006-07-12  Naoto Morishima  <naoto@morishima.net>
+
+	* elscreen.el (elscreen-get-current-screen)
+	(elscreen-get-previous-screen): Return minimum screen when the
+	value from screen-history is nil.
+
+
+2006-07-08  Naoto Morishima  <naoto@morishima.net>
+
+	* elscreen.el (elscreen-frame-confs): Change its structure as
+	following: `screen-property and 'screen-history added.	'status
+	removed ('current-screen and 'previous-screen are absorbed by
+	'screen-history).
+	(elscreen-get-status, elscreen-set-status)
+	(elscreen-set-previous-screen): Removed.
+	(elscreen-get-screen-property, elscreen-set-screen-property)
+	(elscreen-delete-screen-property): New function.
+	(elscreen-get-window-configuration)
+	(elscreen-set-window-configuration)
+	(elscreen-get-screen-nickname, elscreen-set-screen-nickname)
+	(elscreen-delete-screen-nickname): Use screen-property.
+	(elscreen-delete-widnow-configuration): Removed.
+
+
+2006-02-26  Naoto Morishima  <naoto@morishima.net>
+
+	* elscreen.el (elscreen-screen-modified-hook-setup): Check whether
+	hook-or-function is hook or function by its name instead of
+	fboundp and boundp.  Moreover fix bug that mode is not set
+	properly.
+	(elscreen-get-alist-to-nickname): Call string-or-function (in case
+	that it is a function) without any arguments in condition-case
+	form for backward compatibility.
+
+
+2006-02-22  Naoto Morishima  <naoto@morishima.net>
+
+	* elscreen.el (elscreen-tab-display-create-screen): Renamed to...
+	(elscreen-tab-display-control): this.  Now create-screen tab is
+	upgraded to control tab, on which you can switch screen with
+	mouse-1 and mouse-3, create new screen with mouse-2.
+	(elscreen-tab-control-face): New face for control tab.
+	(elscreen-e21-tab-create-keymap): Types of arguments are changed,
+	now it takes 3 functions for mouse-1, mouse-2 and mouse-3.
+	(elscreen-truncate-screen-name): New function.
+	(elscreen-get-screen-to-name-alist): Don't truncate screen-name.
+	Caller should apply (elscreen-truncate-screen-name) for each
+	screen-name if needed.
+	(elscreen-e21-tab-update): Displays control tab instead of
+	create-screen tab.  Also displays help-echo of complete
+	screen-name on each screen tab.
+
+
+2006-02-18  Naoto Morishima  <naoto@morishima.net>
+
+	* elscreen.el (elscreen-e21-tab-escape-%): New function.
+	(elscreen-e21-tab-update): Use elscreen-e21-tab-escape-% instead
+	of replace-regexp-in-string to keep text properties.
+	(elscreen-e21-mode-line-update): Now mode-line is updated by
+	elscreen-run-screen-update-hook on GNU Emacs.
+
+
+2005-12-17  Naoto Morishima  <naoto@morishima.net>
+
+	ElScreen 1.4.3 released.
+
+
+2005-12-16  Naoto Morishima  <naoto@morishima.net>
+
+	* (elscreen-select-and-goto): Key binding is changed to <prefix> ",
+	  for more compatibility with GNU screen.
+	* (elscreen-goto): Now <prefix> ' is bound to this function, for
+	  compatibility with GNU screen.
+	* (elscreen-display-time): Display load average in addition to
+	  current time.
+
+
+2005-12-14  Naoto Morishima  <naoto@morishima.net>
+
+	* (elscreen-notify-screen-modification): Accept notifications on
+	  XEmacs 21.4, which does not have window-configuration-equal.
+
+
+2005-12-13  Naoto Morishima  <naoto@morishima.net>
+
+	* (elscreen-save-screen-excursion): Don't call
+	  elscreen-screen-number-string-update for XEmacs.
+	* (elscreen-goto): Ditto, and call redraw-frame in case of FSF
+	  Emacs running on some window system and its major version equals
+	  21.
+	* (elscreen-screen-number-string-update): Renamed to...
+	* (elscreen-xmas-mode-line-update): this, and now mode-line is
+	  updated by elscreen-run-screen-update-hook.
+
+
+2005-12-11  Naoto Morishima  <naoto@morishima.net>
+
+	* (elscreen-make-frame-confs): Save current buffer.
+	* (elscreen-e21-tab-update): Use replace-regexp-in-string so
+	  that screen-names do not lose their properties.
+
+
+2005-12-09  Naoto Morishima  <naoto@morishima.net>
+
+	ElScreen 1.4.2 released.
+
+
+2005-12-01  Naoto Morishima  <naoto@morishima.net>
+
+	From Hideyuki SHIRAI <shirai@meadowy.org>:
+	* (elscreen-execute-extended-command): Use completing-read instead
+	  of read-command to ensure that the extended-command-history is
+	  in operation on FSF Emacs.
+	* (elscreen-dired): New function.
+
+
+2005-11-29  Naoto Morishima  <naoto@morishima.net>
+
+	* (elscreen-notify-screen-modification-suppress): Restore original
+	  flag when exiting from this macro.
+	* (elscreen-make-frame-confs): Add 'screen-to-name-alist-cache to
+	  store cache of screen-to-name-alist.
+	* (elscreen-get-screen-to-name-alist-cache): New function.
+	* (elscreen-set-screen-to-name-alist-cache): Ditto.
+	* (elscreen-get-screen-to-name-alist): Use cache of
+	  screen-name-to-alist instead of generating it when
+	  screen-modified-p is nil.
+
+	From Hideyuki SHIRAI <shirai@meadowy.org>:
+	* (elscreen-copy-tree): Fully rewritten, and use copy-tree if
+	  available.
+
+
+2005-11-27  Naoto Morishima  <naoto@morishima.net>
+
+	* (elscreen-kill-screen-and-buffers): New function.
+	* (elscreen-command-line-funcall): New function.  Now emacs
+	  accepts `-e' or `--elscreen-funcall' option with 1 argument in
+	  command line.
+	* (elscreen-find-screen-by-buffer): Call elscreen-create-internal
+	  with arg 'noerror instead of t, for readability.
+	* (elscreen-execute-extended-command): Ditto.
+	* elscreen-menu-bar-command-entries: Renamed to...
+	* elscreen-e21-menu-bar-command-entries: this, or...
+	* elscreen-xmas-menu-bar-command-entries: this, properly.
+	* (elscreen-run-screen-update-hook): Don't use post-command-hook
+	  to check whether menubar and tab are required to be updated.	It
+	  is expected that this change improve feeling speed of each
+	  command, especially functions to move cursor such as
+	  forward-char.
+
+	From Hideyuki SHIRAI <shirai@meadowy.org>:
+	* (elscreen-e21-tab-update): Avoid unnecessary call of
+	  elscreen-get-screen-name-to-alist.
+
+
+2005-11-26  Naoto Morishima  <naoto@morishima.net>
+
+	* (elscreen-clone): New function.
+	* (elscreen-bootstrap): Renamed to...
+	* (elscreen-start): this.
+
+
+2005-11-22  Naoto Morishima  <naoto@morishima.net>
+
+	ElScreen 1.4.1 released.
+
+
+2005-11-21  Naoto Morishima  <naoto@morishima.net>
+
+	* (elscreen-find-and-goto-by-buffer): Select window displaying
+	  the specified buffer unless optional argument noselect is t.
+	* (elscreen-find-file-read-only): New function.
+
+
+2005-11-20  Naoto Morishima  <naoto@morishima.net>
+
+	ElScreen 1.4.0 released.
+
+
+2005-11-16  Naoto Morishima  <naoto@morishima.net>
+
+	* (elscreen-apply-window-configuration): New function.
+	* (elscreen-bootstrap): Ditto.
+
+
+2005-11-14  Naoto Morishima  <naoto@morishima.net>
+
+	* (elscreen-default-window-configuration): New function.
+	* (elscreen-make-frame-confs): Set screen 0 to the default
+	  window configuration.
+	* (elscreen-add-help): Renamed to...
+	* (elscreen-set-help): this, and now argument of this function
+	  should be symbol of help string.
+	* (elscreen-help): Rewritten.
+
+
+2005-11-13  Naoto Morishima  <naoto@morishima.net>
+
+	* elscreen-mode-to-nickname-alist-symbol-list: New variable.
+	* elscreen-mode-to-nickname-alist-internal: Ditto.
+	* (elscreen-rebuild-mode-to-nickname-alist): New function.
+	* (elscreen-set-mode-to-nickname-alist): Ditto.
+	* elscreen-buffer-to-nickname-alist-symbol-list: New variable.
+	* elscreen-buffer-to-nickname-alist-internal: Ditto.
+	* (elscreen-rebuild-buffer-to-nickname-alist): New function.
+	* (elscreen-set-buffer-to-nickname-alist): Ditto.
+
+
+2005-11-12  Naoto Morishima  <naoto@morishima.net>
+
+	* elscreen-default-buffer-initial-major-mode: New variable.
+	* elscreen-default-buffer-initial-message: Ditto.
+	* (elscreen-create-internal): Insert default message and set
+	  major-mode when default buffer is created.
+	* elscreen-startup-command-line-processing: Ditto.
+	* (elscreen-command-line-find-file): New function.
+	* (elscreen-e21-command-line): Ditto.
+	* (elscreen-xmas-command-line-1): New advice.
+
+
+2005-11-11  Naoto Morishima  <naoto@morishima.net>
+
+	* Collect codes for mode-line, tab and menu together, and clean up
+	  tab and mode-line code for GNU Emacs.
+	* Delete trailing whitespaces.
+
+
+2005-11-10  Naoto Morishima  <naoto@morishima.net>
+
+	* (elscreen-select-and-goto): Remove bound but unused variables.
+	* (elscreen-display-screen-name-list): Ditto.
+	* (elscreen-set-prefix-key): New function.
+	* (elscreen-find-screen-by-buffer): Return nil if buffer does not
+	  exist.
+	* (elscreen-find-screen-by-major-mode): regexp-quote'ize
+	  major-mode name.
+	* (elscreen-find-screen-by-buffer): Don't use
+	  `with-selected-window', which does not exist on GNU Emacs 21.
+	* (elscreen-find-screen-by-major-mode)): Ditto.
+
+	From Hideyuki SHIRAI <shirai@meadowy.org>:
+	* Use static-* to evaluate statically when compilation time.
+	* (elscreen-select-and-goto): Specify tentative history-list in
+	  `read-from-minibuffer' to avoid adding its input to the global
+	  history-list.
+
+
+2005-11-09  Naoto Morishima  <naoto@morishima.net>
+
+	* (elscreen-screen-modified-hook): Renamed to...
+	* (elscreen-notify-screen-modification): this, and now this calls
+	  `elscreen-run-screen-update-hook' when argument MODE is set to
+	  'force-immediately.
+	* (elscreen-screen-modified-set-hook): Renamed to...
+	* (elscreen-screen-modified-hook-setup): this, and does not run
+	  `elscreen-screen-update-hook' any more.
+	* (elscreen-select-and-goto): Use `read-from-minibuffer' to read
+	  key instead of 'read-char-exclusive' so that emacs can receive
+	  any commands in the other frames.  Also avoid trying delete
+	  window for minibuffer when it is active.
+
+	From Hideyuki SHIRAI <shirai@meadowy.org>:
+	* (elscreen-kill-others): New function.
+	* (elscreen-select-and-goto): Support several commands such as
+	  create, next, etc.  Also set buffer for candidate read-only.
+	* (elscreen-execute-extended-command): Fix bug that
+	  `target-screen' is not bounded by let.
+
+
+2005-11-05  Naoto Morishima  <naoto@morishima.net>
+
+	* (elscreen-status-label): New function.
+	* (elscreen-find-screen): Ditto.
+	* (elscreen-find-screen-by-buffer): Ditto.
+	* (elscreen-find-screen-by-major-mode): Ditto.
+	* (elscreen-goto-screen-with-buffer): Renamed to...
+	* (elscreen-find-and-goto-by-buffer): this, and almost rewritten
+	  using `elscreen-find-screen-by-buffer'.  This function now does
+	  not create new screen by default when target screen isn't found.
+	  Also this uses iswitchb-read-buffer if iswitchb is loaded.
+	* (elscreen-find-file): Use `elscreen-find-and-goto-by-buffer'.
+
+	From Hideyuki SHIRAI <shirai@meadowy.org>:
+	* (elscreen-select-and-goto): New function.  Now C-z g is bounded
+	  to this, instead of primitive `elscreen-goto'.
+
+
+2005-11-04  Naoto Morishima  <naoto@morishima.net>
+
+	* elscreen-screen-modified-hook-suppress: Renamed to...
+	* elscreen-notify-screen-modification-suppress-flag: this.
+	* (elscreen-notify-screen-modification-suppress): New macro.
+	  Several functions use this instead of setting
+	  `elscreen-screen-modified-hook-suppress-flag' directly.
+	* (elscreen-one-screen-p): New function.  Several
+	  functions now use this.
+	* (elscreen-create-internal): New function.  This creates new
+	  screen and just returns its number.
+	* (elscreen-create): Just call `elscreen-create-internal' and
+	  `elscreen-goto'.
+	* (elscreen-goto): Return screen if success, otherwise nil.
+
+
+2005-11-03  Naoto Morishima  <naoto@morishima.net>
+
+	* (elscreen-e21-tab-update): Replace `%' to `%%'.
+
+
+2005-10-17  Naoto Morishima  <naoto@morishima.net>
+
+	ElScreen 1.3.5 released.
+
+	* (elscreen-goto-internal): Restore saved point-marker only when
+	  the stored marker is alive.
+
+
+2005-10-08  Naoto Morishima  <naoto@morishima.net>
+
+	ElScreen 1.3.4 released.
+
+	From Yoshinori Koseki <kose@meadowy.org>:
+	* (elscreen-current-window-configuration): New function.  This
+	  returns current-window-configuration with point-marker of
+	  current-buffer.
+	* (elscreen-create): Use `elscreen-current-window-configuration'
+	  instead of `current-window-configuration'.
+	* (elscreen-goto): Ditto.
+	* (elscreen-get-screen-create): Ditto.
+	* (elscreen-get-screen-to-name-alist): Ditto.
+	* (elscreen-goto-internal): Restore saved point-marker in
+	  current-buffer in addition to window-configuration.
+
+
+2005-09-12  Naoto Morishima  <naoto@morishima.net>
+
+	ElScreen 1.3.3 released.
+
+
+2004-08-23  Naoto Morishima  <naoto@morishima.net>
+
+	ElScreen 1.3.2 released.
+
+	* (elscreen-copy-tree): New function.  Use this in
+	  `elscreen-save-screen-excursion' macro instead of copy-tree.
+	* (elscreen-save-screen-excursion): Save and restore buffer-list,
+	  as set-window-configuration changes it.
+
+
+2004-08-14  Naoto Morishima  <naoto@morishima.net>
+
+	ElScreen 1.3.1 released.
+
+	* (elscreen-save-screen-excursion): New macro.
+	* (elscreen-get-screen-create): Use
+	  `elscreen-save-screen-excursion'.
+	* (elscreen-get-screen-to-name-alist): Ditto.
+
+
+2004-08-12  Naoto Morishima  <naoto@morishima.net>
+
+	* (elscreen-create): Return screen number if new screen is
+	  created, otherwise nil.
+	* (elscreen-kill): Return screen number if specified (or current)
+	  screen is successfully killed, otherwise nil.
+	* (elscreen-get-screen-create): Return screen number if existing
+	  screen is found or new screen is created, otherwise nil.
+	* (elscreen-e21-tab-update): If elscreen-display-tab is set to
+	  nil, set header-line-format to nil for each buffer only once.
+	* (elscreen-swap): New function.
+	* Set key-binding for `j' to `elscreen-link' instead of undefined
+	  `elscreen-join'.
+
+
+2004-08-06  Naoto Morishima  <naoto@morishima.net>
+
+	ElScreen 1.3.0 released.
+
+	* Allmost all the functions are rewritten.
+	* Add menu support for both GNU Emacs 21 and XEmacs.
+	* Add tab support for GNU Emacs 21.  Tab support for XEmacs is
+	  not planned at this moment, sorry.
+	* Define custamizable variables using defcustom, instead of
+	  defvar.
+	* Many functions are renamed.
+	  (elscreen-display-screen-number): Renamed from
+	  `elscreen-show-screen-number'.
+	  (elscreen-default-buffer-name): Renamed from
+	  `elscreen-scratch-buffer'.
+	  (elscreen-mode-to-nickname-alist): Renamed from
+	  `elscreen-mode-to-screen-alist'.
+	  (elscreen-buffer-to-nickname-alist): Renamed from
+	  `elscreen-buffer-to-screen-alist'.
+	  (elscreen-goto-internal): Renamed from `elscreen-goto0'.
+	  ... and many other functions and variables.
+	* Data structure in which window configurations are kept is
+	  changed.
+
+
+2002-08-28  Naoto Morishima  <naoto@morishima.net>
+
+	ElScreen 1.2.4 released.
+
+
+2002-08-21  Naoto Morishima  <naoto@morishima.net>
+
+	From Dan Debertin <airboss@nodewarrior.org>:
+	* Add elscreen-alloc-confs to hook after-make-frame-functions
+	  when create-frame-hook is not bounded.  This will be able to
+	  avoid errors on GNU emacs.
+
+
+2002-08-15  Naoto Morishima  <naoto@morishima.net>
+
+	From <sen_ml@eccosys.com>:
+	* Add some keysquences so that following keysequence pairs are
+	  bound to the same functionality.
+
+		<prefix> C-w / <prefix> w
+		<prefix> C-k / <prefix> k
+		<prefix> C-m / <prefix> m
+
+
+2002-07-18  Naoto Morishima  <naoto@morishima.net>
+
+	* (elscreen-get-screen-create): In while loop, use
+	  elscreen-goto0 instead of elscreen-goto.
+
+
+2002-06-11  Naoto Morishima  <naoto@morishima.net>
+
+	From Yoichi NAKAYAMA  <yoichi@eken.phys.nagoya-u.ac.jp>:
+	* (elscreen-show-list): Bug fixed.
+	* (elscreen-message): Avoid error even when message contains
+	  format-string-like characters (e.g. "%" in the buffer name).
+	* (elscreen-get-mode-list): Watch major-mode instead of its name.
+	  (elscreen-mode-to-screen-alist): Change default value.
+	  (elscreen-buffer-to-screen-alist): Ditto.
+
+
+2001-09-19  Naoto Morishima  <naoto@morishima.net>
+
+	ElScreen 1.2.2 released.
+
+	* (elscreen-goto0): New function.
+	* (elscreen-goto): Call redraw-frame.
+
+
+2001-03-25  Naoto Morishima  <moley@kyoto.wide.ad.jp>
+
+	* Support multiple frames.
+
+
+2000-01-08  Naoto Morishima  <moley@kyoto.wide.ad.jp>
+
+	ElScreen 1.12 released.
+
+	* Use APEL for alist operation, instead of proprietary alist
+	  library.
+
+
+1997-01-13  Naoto Morishima <naoto-m@is.aist-nara.ac.jp>
+
+	ElScreen 1.02 released.
+
+
+1997-01-12  Naoto Morishima <naoto-m@is.aist-nara.ac.jp>
+
+	* Fix the bug of setting 'global-mode-string'.
+	* Change the way to set 'global-map'.
+	* (elscreen-suspend-emacs): Deleted.  Use C-x C-z to suspend
+	  emacs instead.
+
+
+1997-01-08  Naoto Morishima <naoto-m@is.aist-nara.ac.jp>
+
+	ElScreen 1.01 released.
+
+	* (elscreen-suspend-emacs): New function.
+
+
+1997-01-07  Naoto Morishima <naoto-m@is.aist-nara.ac.jp>
+
+	ElScreen 1.0 released.

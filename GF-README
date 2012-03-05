@@ -1,0 +1,186 @@
+ElScreen-GF 1.5.3 README file
+
+This is the distribution of ElScreen-GF 1.5.3, released November 2007.
+It is an Emacs interface to GNU grep (or its compatibles), GNU ID
+Utils, cscope, and GNU GLOBAL.  ElScreen-GF makes it easier to search
+keyword or token in source codes, list the results, and jump to them.
+This will help you to read or hack source codes, especially in a big
+source tree.
+
+It works with ElScreen 1.4.0 or later, on GNU Emacs 21 or later and
+XEmacs 21.4 or later.  Enjoy!
+
+
+External Programs
+-----------------
+ElScreen-GF supports the followings as external program:
+
+  - GNU grep (http://www.gnu.org/software/grep/grep.html)
+
+    grep is famous utility to print lines matching the specified
+    pattern.  GNU grep has several extended features to traditional
+    grep.  Nowadays major state-of-the-art OS may have GNU grep or its
+    compatible one.
+
+  - GNU ID Utils (http://www.gnu.org/software/idutils/idutils.html)
+
+    This is language-independent (but currently supports C, C++,
+    Assembly, text.  Perl also seems to be supported in the CVS HEAD)
+    identifier database tool, which stores tokens, literal numbers, or
+    words of human-readable text.
+
+  - cscope (http://cscope.sourceforge.net/)
+
+    cscope is an interactive tool that allows you to browse through C
+    source files for specified elements of code.  This provides you
+    the curses-based screen-oriented interface, but ElScreen-GF uses
+    only line-oriented interface.  In addition, ElScreen-GF uses `sort'
+    to sort its output.
+
+  - GNU GLOBAL (http://www.gnu.org/software/global/)
+
+    GNU GLOBAL is an yet another source code tag system.  You can
+    locate a symbol in the source files.  In addition, ElScreen-GF
+    uses `sort' to sort its output.
+
+
+Files
+-----
+This package should contain the following files:
+
+    elscreen-gf.el  ElScreen-GF 1.5.3 main file.
+    README          Introduction to ElScreen-GF 1.5.3 (this file)
+    QuickStart      Quick Start Guide
+
+
+Installation
+------------
+Make sure that you have installed ElScreen.  Put elscreen-gf.el in
+this directory to your load-path, and put following line just next to
+ElScreen entry:
+
+ (load "elscreen-gf" "ElScreen-GF" t)
+
+As mentioned above, you also have to install one of supported external
+programs.  Please refer their own manuals for more detail.
+
+
+Usage
+-----
+The following sequences may valid on ElScreen:
+
+    C-z             ElScreen prefix key
+    C-z C-g         ElScreen-GF prefix key
+    C-z C-g G       Run grep
+    C-z C-g g       Run gid (GNU ID Utils)
+    C-z C-g m       Run mkid (GNU ID Utils)
+    C-z C-g c       Run cscope
+    C-z C-g l       Run global (GNU GLOBAL)
+    C-z C-g t       Run gtags (GNU GLOBAL)
+    C-z C-g u       Go back to the point where the previous search
+                    was invoked.
+    C-z C-g v       Show ElScreen-GF version.
+
+Although a token around the cursor is shown as default value for grep,
+gid, cscope and global, you can specify other keyword.  Regexp is also
+accepted.  Once you run grep, gid, cscope or global, ElScreen-GF
+buffer is created and becomes active.  In this buffer, you may use
+following keys:
+
+    n               Move cursor to the next entry, vertically down.
+    p               Move cursor to the previous entry, vertically up.
+    SPC             Scroll entries upward full screen.
+    DEL             Scroll entries downward full screen.
+    <               Move cursor to the first entry.
+    >               Move cursor to the last entry.
+    N               Move cursor to the first entry of the next source
+                    file.
+    P               Move cursor to the first entry of the previous
+                    source file.
+    t               Toggle truncated lines.
+    o               Jump to the file and line that the selected entry
+                    specifies.
+    O               Likewise, except the buffer is set to read-only.
+    C-g             Delete running grep, gid, cscope or global process.
+    q               Exit from ElScreen-GF mode.  This deletes
+                    ElScreen-GF buffer and its window (or screen when
+                    there is only one window).
+    v               Show ElScreen-GF version.
+
+
+Setup
+-----
+You can set the following variables to configure ElScreen-GF.  These
+can be set in .emacs (or .emacs.d/init.el) file directly or "Options"
+in your menu bar.
+
+    elscreen-gf-grep-program-name
+    elscreen-gf-idutils-gid-program-name
+    elscreen-gf-idutils-mkid-program-name
+    elscreen-gf-cscope-program-name
+    elscreen-gf-global-program-name
+    elscreen-gf-global-gtags-program-name
+
+        Name of external programs.
+
+    elscreen-gf-mode-truncate-lines
+
+        If non nil, each line of result in the ElScreen-GF mode is
+        shown in truncated manner by default.  The default value is
+        `t'.
+
+    elscreen-gf-invoke-point-history-length
+
+        Maximum number of invoke-point stored by ElScreen-GF.
+        invoke-point is the location where gf searches were invoked.
+
+    elscreen-gf-mode-selected-entry-face
+
+        Face used for the selected entry in ElScreen-GF mode.
+
+    elscreen-gf-mode-file-name-face
+
+        Face used for file name in ElScreen-GF mode.
+
+    elscreen-gf-mode-line-number-face
+
+        Face used for line number in ElScreen-GF mode.
+
+    elscreen-gf-mode-pattern-face
+
+        Face used to emphasize the specified keyword in ElScreen-GF
+        mode.
+
+    elscreen-gf-emphasis-after-jump-face
+
+        Face used to emphasize the selected line after jump.
+
+
+Automatic Database Update
+-------------------------
+You can update `ID' GNU ID Utils database or `GTAGS' GNU GLOBAL
+database after saveing buffer with using
+
+  elscreen-gf-idutils-mkid-setup-after-save-hook
+  elscreen-gf-global-gtags-setup-after-save-hook
+
+for GNU ID Utils and GNU GLOBAL respectively.  For instance, you can
+add following lines to update `ID' database when saving C source code:
+
+  (add-hook 'c-mode-hook 'elscreen-gf-idutils-mkid-setup-after-save-hook)
+
+
+Where Can I Get ElScreen-GF?
+----------------------------
+ElScreen-GF (and ElScreen) is available from the following anonymous
+ftp site.
+
+       ftp://ftp.morishima.net/pub/morishima.net/naoto/ElScreen/
+
+
+Bug Reports
+-----------
+ElScreen-GF is maintained by Naoto Morishima.  Please mail bug
+reports and any comments to:
+
+       naoto@morishima.net
