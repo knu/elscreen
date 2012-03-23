@@ -110,12 +110,16 @@ buffer-name and corresponding screen-name."
            (elscreen-rebuild-buffer-to-nickname-alist)))
   :group 'elscreen)
 
+(static-when (>= emacs-major-version 24)
+
 (defcustom elscreen-startup-command-line-processing t
   "*If non-nil, ElScreen processes command line when Emacsen
 starts up, and opens files with new screen if needed."
   :type 'boolean
   :tag "Enable/Disable ElScreen to Process Command Line Arguments"
   :group 'elscreen)
+
+) ; (>= emacs-major-version 24)
 
 (defcustom elscreen-display-screen-number t
   "*Non-nil to display the number of current screen in the mode line."
@@ -1649,6 +1653,10 @@ Use \\[toggle-read-only] to permit editing."
 
 ;;; Command-line processing at startup time
 
+; In Emacs 24 or later there is no access to file-count, line, column,
+; etc., so we cannot implement command-line processing this way.
+(static-when (>= emacs-major-version 24)
+
 (defun elscreen-command-line-funcall (switch-string)
   (let ((argval (intern (car command-line-args-left)))
         screen elscreen-window-configuration)
@@ -1728,24 +1736,6 @@ Use \\[toggle-read-only] to permit editing."
     (add-hook 'after-init-hook (lambda ()
                                  (add-to-list 'command-line-functions
                                               'elscreen-e23-command-line t))))
-     ((> emacs-major-version 23)		; Emacs 24 or later
-    (defun elscreen-e24-command-line ()
-      (when (string-match "\\`-" cl1-argi)
-        (error "Unknown option `%s'" cl1-argi))
-      (setq file-count (1+ file-count))
-      (setq inhibit-startup-buffer-menu t)
-      (let* ((file
-              (expand-file-name
-               (command-line-normalize-file-name orig-argi)
-               cl1-dir)))
-        (elscreen-command-line-find-file file file-count cl1-line cl1-column))
-      (setq cl1-line 0)
-      (setq cl1-column 0)
-      t)
-
-    (add-hook 'after-init-hook (lambda ()
-                                 (add-to-list 'command-line-functions
-                                              'elscreen-e24-command-line t))))
      ))
 
   (static-when elscreen-on-xemacs
@@ -1782,6 +1772,8 @@ Use \\[toggle-read-only] to permit editing."
               (elscreen-command-line-find-file
                (expand-file-name arg dir) file-count line)
               (setq line nil)))))))))
+
+) ; (>= emacs-major-version 24)
 
 ;;; Unsupported Functions...
 
