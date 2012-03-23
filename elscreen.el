@@ -1691,6 +1691,8 @@ Use \\[toggle-read-only] to permit editing."
                   ("-e"                . elscreen-command-line-funcall))))
 
   (static-when elscreen-on-emacs
+    (cond
+     ((< emacs-major-version 23)	; Emacs 22 or prior
     (defun elscreen-e21-command-line ()
       (when (string-match "\\`-" argi)
         (error "Unknown option `%s'" argi))
@@ -1708,6 +1710,43 @@ Use \\[toggle-read-only] to permit editing."
     (add-hook 'after-init-hook (lambda ()
                                  (add-to-list 'command-line-functions
                                               'elscreen-e21-command-line t))))
+     ((= emacs-major-version 23)	; Emacs 23
+    (defun elscreen-e23-command-line ()
+      (when (string-match "\\`-" argi)
+        (error "Unknown option `%s'" argi))
+      (setq file-count (1+ file-count))
+      (setq inhibit-startup-buffer-menu t)
+      (let* ((file
+              (expand-file-name
+               (command-line-normalize-file-name orig-argi)
+               cl1-dir)))
+        (elscreen-command-line-find-file file file-count cl1-line cl1-column))
+      (setq cl1-line 0)
+      (setq cl1-column 0)
+      t)
+
+    (add-hook 'after-init-hook (lambda ()
+                                 (add-to-list 'command-line-functions
+                                              'elscreen-e23-command-line t))))
+     ((> emacs-major-version 23)		; Emacs 24 or later
+    (defun elscreen-e24-command-line ()
+      (when (string-match "\\`-" cl1-argi)
+        (error "Unknown option `%s'" cl1-argi))
+      (setq file-count (1+ file-count))
+      (setq inhibit-startup-buffer-menu t)
+      (let* ((file
+              (expand-file-name
+               (command-line-normalize-file-name orig-argi)
+               cl1-dir)))
+        (elscreen-command-line-find-file file file-count cl1-line cl1-column))
+      (setq cl1-line 0)
+      (setq cl1-column 0)
+      t)
+
+    (add-hook 'after-init-hook (lambda ()
+                                 (add-to-list 'command-line-functions
+                                              'elscreen-e24-command-line t))))
+     ))
 
   (static-when elscreen-on-xemacs
     (defadvice command-line-1 (around elscreen-xmas-command-line-1 activate)
