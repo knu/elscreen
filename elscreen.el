@@ -136,7 +136,7 @@ nil means don't display tabs."
   :group 'elscreen)
 
 (make-obsolete-variable 'elscreen-tab-display-create-screen
-                        'elscreen-tab-display-control)
+                        'elscreen-tab-display-control "2012-04-11")
 (defcustom elscreen-tab-display-control t
   "*Non-nil to display control tab at the most left side."
   :tag "Show/Hide the Control Tab"
@@ -623,7 +623,7 @@ from `elscreen-frame-confs', a cons cell."
 (defsubst elscreen-get-alist-to-nickname (alist op mode-or-buffer-name)
   (catch 'found
     (progn
-      (mapcar
+      (mapc
        (lambda (map)
          (let ((nickname nil)
                (condition-data (car map))
@@ -811,7 +811,7 @@ when error is occurred."
          (elscreen-goto-internal screen)
          (save-selected-window
            (catch 'found
-             (mapcar
+             (mapc
               (lambda (window)
                 (select-window window)
                 (when (string-match major-mode-re (symbol-name major-mode))
@@ -905,13 +905,13 @@ is ommitted, current screen will survive."
          screen-list-string)
     (cond
      ((not (elscreen-screen-live-p screen)) ;; XXX
-      (when (interactive-p)
+      (when (called-interactively-p 'any)
         (elscreen-message "There is no such screen")))
      ((null screen-list)
-      (when (interactive-p)
+      (when (called-interactively-p 'any)
         (elscreen-message "There is only one screen, cannot kill")))
      ((or
-       (not (interactive-p))
+       (not (called-interactively-p 'any))
        (yes-or-no-p (format "Really kill screens other than %d? " screen)))
       (setq screen-list-string (mapconcat
                                 (lambda (screen)
@@ -920,7 +920,7 @@ is ommitted, current screen will survive."
                                 screen-list ","))
       (elscreen-goto-internal screen)
       (elscreen-notify-screen-modification 'force-immediately)
-      (when (interactive-p)
+      (when (called-interactively-p 'any)
         (elscreen-message (format "screen %s killed" screen-list-string)))))
     screen-list))
 
@@ -987,7 +987,7 @@ is ommitted, current screen will survive."
 (defun elscreen-jump ()
   "Switch to specified screen."
   (interactive)
-  (let ((next-screen (string-to-number (string last-command-char))))
+  (let ((next-screen (string-to-number (string last-command-event))))
     (if (and (<= 0 next-screen) (<= next-screen 9))
         (elscreen-goto next-screen))))
 (defalias 'elscreen-jump-0 'elscreen-jump)
@@ -1049,7 +1049,7 @@ is ommitted, current screen will survive."
     (princ (substitute-command-keys
             (mapconcat 'symbol-value
                        elscreen-help-symbol-list "\n\n")))
-    (print-help-return-message)))
+    (help-print-return-message)))
 
 
 ;;; Utility Functions
@@ -1154,11 +1154,11 @@ is ommitted, current screen will survive."
       (define-key minibuffer-map "\C-m" 'exit-recursive-edit)
       (define-key minibuffer-map "q" 'exit-recursive-edit)
       (define-key minibuffer-map " " 'exit-recursive-edit)
-      (mapcar
+      (mapc
        (lambda (command)
          (define-key minibuffer-map (car command) 'self-insert-and-exit))
        command-list)
-      (mapcar
+      (mapc
        (lambda (screen)
          (define-key minibuffer-map (number-to-string screen)
            'self-insert-and-exit))
@@ -1181,7 +1181,7 @@ is ommitted, current screen will survive."
 creating one if none already exists."
   (interactive)
   (let* ((prompt "Go to the screen with specified buffer: ")
-         (create (or create (interactive-p)))
+         (create (or create (called-interactively-p 'any)))
          (buffer-name (or (and (bufferp buffer) (buffer-name buffer))
                           (and (stringp buffer) buffer)
                           (and (featurep 'iswitchb)
@@ -1208,7 +1208,7 @@ Like \\[elscreen-find-file] but marks buffer as read-only.
 Use \\[toggle-read-only] to permit editing."
   (interactive "FFind file read-only in new screen: ")
   (elscreen-find-file filename)
-  (toggle-read-only 1))
+  (setq buffer-read-only t))
 
 (defun elscreen-dired (dirname &optional switches)
   (interactive (progn
@@ -1462,7 +1462,7 @@ Use \\[toggle-read-only] to permit editing."
                     control-tab
                     tab-separator))))
 
-          (mapcar
+          (mapc
            (lambda (screen)
              (let ((kill-screen
                     (propertize
@@ -1612,7 +1612,7 @@ Use \\[toggle-read-only] to permit editing."
 
 (defun elscreen-start ()
   (interactive)
-  (mapcar
+  (mapc
    (lambda (frame)
      (elscreen-make-frame-confs frame 'keep))
    (frame-list))
