@@ -26,13 +26,6 @@
 
 (provide 'elscreen)
 (require 'alist)
-(eval-when-compile
-  (require 'static))
-
-(static-defconst elscreen-on-xemacs (featurep 'xemacs))
-(static-defconst elscreen-on-emacs (and (not elscreen-on-xemacs)
-                                        (>= emacs-major-version 21)))
-
 
 ;;; User Customizable Variables:
 
@@ -137,71 +130,65 @@ nil means don't display tabs."
                    (and (numberp value)
                         (> value 0)))
            (custom-set-default symbol value)
-           (static-cond
-            (elscreen-on-emacs
-             (when (fboundp 'elscreen-e21-tab-update)
-               (elscreen-e21-tab-update t)))
-            (elscreen-on-xemacs
-             (when (fboundp 'elscreen-xmas-tab-update)
-               (elscreen-xmas-tab-update t))))))
+           (when (fboundp 'elscreen-e21-tab-update)
+             (elscreen-e21-tab-update t))))
   :group 'elscreen)
 
-(static-when elscreen-on-emacs ;; GNU Emacs 21
-  (make-obsolete-variable 'elscreen-tab-display-create-screen
-                          'elscreen-tab-display-control)
-  (defcustom elscreen-tab-display-control t
-    "*Non-nil to display control tab at the most left side."
-    :tag "Show/Hide the Control Tab"
-    :type 'boolean
-    :set (lambda (symbol value)
-           (custom-set-default symbol value)
-           (when (fboundp 'elscreen-e21-tab-update)
-             (elscreen-e21-tab-update t)))
-    :group 'elscreen)
+(make-obsolete-variable 'elscreen-tab-display-create-screen
+                        'elscreen-tab-display-control)
+(defcustom elscreen-tab-display-control t
+  "*Non-nil to display control tab at the most left side."
+  :tag "Show/Hide the Control Tab"
+  :type 'boolean
+  :set (lambda (symbol value)
+         (custom-set-default symbol value)
+         (when (fboundp 'elscreen-e21-tab-update)
+           (elscreen-e21-tab-update t)))
+  :group 'elscreen)
 
-  (defcustom elscreen-tab-display-kill-screen 'left
-    "*Location of the icons to kill a screen on each tab.  Possible values are 'left, 'right, or nil (to hide them)."
-    :tag "Location of Buttons to Kill Screen on Each Tab"
-    :type '(choice (const :tag "Left" left)
-                   (const :tag "Right" right)
-                   (const :tag "None" nil))
-    :set (lambda (symbol value)
-           (custom-set-default symbol value)
-           (when (fboundp 'elscreen-e21-tab-update)
-             (elscreen-e21-tab-update t)))
-    :group 'elscreen)
+(defcustom elscreen-tab-display-kill-screen 'left
+  "*Location of the icons to kill a screen on each tab.  Possible values are 'left, 'right, or nil (to hide them)."
+  :tag "Location of Buttons to Kill Screen on Each Tab"
+  :type '(choice (const :tag "Left" left)
+                 (const :tag "Right" right)
+                 (const :tag "None" nil))
+  :set (lambda (symbol value)
+         (custom-set-default symbol value)
+         (when (fboundp 'elscreen-e21-tab-update)
+           (elscreen-e21-tab-update t)))
+  :group 'elscreen)
 
-  (defface elscreen-tab-background-face
-    '((((type x w32 mac) (class color))
-       :background "Gray50")
-      (((class color))
-       (:background "black")))
-    "Face to fontify background of tab line."
-    :group 'elscreen)
+(defface elscreen-tab-background-face
+  '((((type x w32 mac) (class color))
+     :background "Gray50")
+    (((class color))
+     (:background "black")))
+  "Face to fontify background of tab line."
+  :group 'elscreen)
 
-  (defface elscreen-tab-control-face
-    '((((type x w32 mac) (class color))
-       (:background "white" :foreground "black" :underline "Gray50"))
-      (((class color))
-       (:background "white" :foreground "black" :underline t))
-      (t (:underline t)))
-    "Face for control tab."
-    :group 'elscreen)
+(defface elscreen-tab-control-face
+  '((((type x w32 mac) (class color))
+     (:background "white" :foreground "black" :underline "Gray50"))
+    (((class color))
+     (:background "white" :foreground "black" :underline t))
+    (t (:underline t)))
+  "Face for control tab."
+  :group 'elscreen)
 
-  (defface elscreen-tab-current-screen-face
-    '((((class color))
-       (:background "white" :foreground "black"))
-      (t (:underline t)))
-    "Face for current screen tab."
-    :group 'elscreen)
+(defface elscreen-tab-current-screen-face
+  '((((class color))
+     (:background "white" :foreground "black"))
+    (t (:underline t)))
+  "Face for current screen tab."
+  :group 'elscreen)
 
-  (defface elscreen-tab-other-screen-face
-    '((((type x w32 mac) (class color))
-       :background "Gray85" :foreground "Gray50")
-      (((class color))
-       (:background "blue" :foreground "black" :underline t)))
-    "Face for tabs other than current screen one."
-    :group 'elscreen))
+(defface elscreen-tab-other-screen-face
+  '((((type x w32 mac) (class color))
+     :background "Gray85" :foreground "Gray50")
+    (((class color))
+     (:background "blue" :foreground "black" :underline t)))
+  "Face for tabs other than current screen one."
+  :group 'elscreen)
 
 
 ;;; Key & Menu bindings:
@@ -398,16 +385,8 @@ Return the value of the last form in BODY."
 (defun elscreen-delete-frame-confs (frame)
   (remove-alist 'elscreen-frame-confs frame))
 
-(static-cond
- ((boundp 'after-make-frame-functions) ;; GNU Emacs 21
-  (add-hook 'after-make-frame-functions 'elscreen-make-frame-confs))
- (t ;; XEmacs
-  (add-hook 'create-frame-hook 'elscreen-make-frame-confs)))
-(static-cond
- ((boundp 'delete-frame-functions) ;; GNU Emacs 22?
-  (add-hook 'delete-frame-functions 'elscreen-delete-frame-confs))
- (t ;; XEmacs
-  (add-hook 'delete-frame-hook 'elscreen-delete-frame-confs)))
+(add-hook 'after-make-frame-functions 'elscreen-make-frame-confs)
+(add-hook 'delete-frame-functions 'elscreen-delete-frame-confs)
 
 (defsubst elscreen-get-conf-list (type)
   (get-alist type (elscreen-get-frame-confs (selected-frame))))
@@ -527,10 +506,6 @@ from `elscreen-frame-confs', a cons cell."
   (elscreen-set-conf-list 'modified-inquirer nil)
   (add-hook 'post-command-hook 'elscreen-run-screen-update-hook))
 
-(cond
- ((fboundp 'compare-window-configurations)) ;; GNU Emacs
- ((fboundp 'window-configuration-equal) ;; XEmacs 21.5
-  (defalias 'compare-window-configurations 'window-configuration-equal)))
 (defvar elscreen-screen-modified-hook-pwc nil)
 (defun elscreen-notify-screen-modification (&optional mode)
   (when (and (not (window-minibuffer-p))
@@ -576,7 +551,6 @@ from `elscreen-frame-confs', a cons cell."
  other-window
  window-configuration-change-hook window-size-change-functions
  (handle-switch-frame 'force) ;; GNU Emacs 21
- (select-frame-hook 'force) ;; XEmacs
  (delete-frame 'force)
  (Info-find-node-2 'force))
 
@@ -930,9 +904,6 @@ is ommitted, current screen will survive."
      (elscreen-current-window-configuration))
     (elscreen-set-current-screen screen)
     (elscreen-goto-internal screen)
-    (static-when (and elscreen-on-emacs (= emacs-major-version 21))
-      (when window-system
-        (redraw-frame (selected-frame))))
     (elscreen-notify-screen-modification 'force)
     (run-hooks 'elscreen-goto-hook)
     screen)
@@ -1114,9 +1085,7 @@ is ommitted, current screen will survive."
          window frame-last-window command-or-target-screen mini-hist)
     ;; prepare window to show candidates
     (save-window-excursion
-      (setq frame-last-window (previous-window (static-if elscreen-on-xemacs
-                                                   (frame-highest-window)
-                                                 (frame-first-window))))
+      (setq frame-last-window (previous-window (frame-first-window)))
       (while (minibuffer-window-active-p frame-last-window)
         (setq frame-last-window (previous-window frame-last-window)))
       (while (and (not (one-window-p))
@@ -1242,9 +1211,7 @@ Use \\[toggle-read-only] to permit editing."
                                       (t
                                        (format "%s M-x " prefix-key)))
                                 obarray 'commandp t nil
-                                (static-if elscreen-on-xemacs
-                                    'read-command-history
-                                  'extended-command-history))))
+                                'extended-command-history)))
     (if (setq target-screen (elscreen-create-internal 'noerror))
         (elscreen-goto target-screen)
       (select-window (split-window)))
@@ -1254,398 +1221,273 @@ Use \\[toggle-read-only] to permit editing."
 ;;; Mode Line & Menu & Tab
 
 ;; GNU Emacs
-(static-when elscreen-on-emacs
-  ;; Mode Line
-  (defvar elscreen-e21-mode-line-string "[0]")
-  (defun elscreen-e21-mode-line-update ()
-    (when (elscreen-screen-modified-p 'elscreen-e21-mode-line-update)
-      (setq elscreen-e21-mode-line-string
-            (format "[%d]" (elscreen-get-current-screen)))
-      (force-mode-line-update)))
 
-  (let ((point (or
-                ;; GNU Emacs 21.3.50 or later
-                (memq 'mode-line-position mode-line-format)
-                ;; GNU Emacs 21.3.1
-                (memq 'mode-line-buffer-identification mode-line-format)))
-        (elscreen-mode-line-elm '(elscreen-display-screen-number
-                                  (" " elscreen-e21-mode-line-string))))
-    (when (null (member elscreen-mode-line-elm mode-line-format))
-      (setcdr point (cons elscreen-mode-line-elm (cdr point)))))
+(defvar elscreen-e21-mode-line-string "[0]")
+(defun elscreen-e21-mode-line-update ()
+  (when (elscreen-screen-modified-p 'elscreen-e21-mode-line-update)
+    (setq elscreen-e21-mode-line-string
+          (format "[%d]" (elscreen-get-current-screen)))
+    (force-mode-line-update)))
 
-  (add-hook 'elscreen-screen-update-hook 'elscreen-e21-mode-line-update)
+(let ((point (memq 'mode-line-position mode-line-format))
+      (elscreen-mode-line-elm '(elscreen-display-screen-number
+                                (" " elscreen-e21-mode-line-string))))
+  (when (null (member elscreen-mode-line-elm mode-line-format))
+    (setcdr point (cons elscreen-mode-line-elm (cdr point)))))
+
+(add-hook 'elscreen-screen-update-hook 'elscreen-e21-mode-line-update)
 
   ;; Menu
-  (define-key-after (lookup-key global-map [menu-bar]) [elscreen]
-    (cons "ElScreen" (make-sparse-keymap "ElScreen")) 'buffer)
 
-  (defvar elscreen-e21-menu-bar-command-entries
-    (list (list 'elscreen-command-separator
-                'menu-item
-                "--")
-          (list 'elscreen-create
-                'menu-item
-                "Create Screen"
-                'elscreen-create
-                :help "Create a new screen and switch to it")
-          (list 'elscreen-clone
-                'menu-item
-                "Clone Screen"
-                'elscreen-clone
-                :help "Create a new screen with the window-configuration of current screen")
-          (list 'elscreen-kill
-                'menu-item
-                "Kill Screen"
-                'elscreen-kill
-                :help "Kill current screen")
-          (list 'elscreen-kill-screen-and-buffers
-                'menu-item
-                "Kill Screen and Buffers"
-                'elscreen-kill-screen-and-buffers
-                :help "Kill current screen and buffers")
-          (list 'elscreen-kill-others
-                'menu-item
-                "Kill Other Screens"
-                'elscreen-kill-others
-                :help "Kill other screens")
-          (list 'elscreen-next
-                'menu-item
-                "Next Screen"
-                'elscreen-next
-                :help "Switch to the \"next\" screen in a cyclic order")
-          (list 'elscreen-previous
-                'menu-item
-                "Previous Screen"
-                'elscreen-previous
-                :help "Switch to the \"previous\" screen in a cyclic order")
-          (list 'elscreen-toggle
-                'menu-item
-                "Toggle Screen"
-                'elscreen-toggle
-                :help "Toggle to the screen selected previously")
-          (list 'elscreen-command-separator
-                'menu-item
-                "--")
-          (list 'elscreen-toggle-display-screen-number
-                'menu-item
-                "Display Screen Number"
-                'elscreen-toggle-display-screen-number
-                :help "Display screen number on the mode line"
-                :button '(:toggle . elscreen-display-screen-number))
-          (list 'elscreen-toggle-display-tab
-                'menu-item
-                "Display Tab"
-                'elscreen-toggle-display-tab
-                :help "Display tab on the top of screen"
-                :button '(:toggle . elscreen-display-tab))))
+(define-key-after (lookup-key global-map [menu-bar]) [elscreen]
+  (cons "ElScreen" (make-sparse-keymap "ElScreen")) 'buffer)
 
-  (defun elscreen-e21-menu-bar-update (&optional force)
-    (when (and (lookup-key (current-global-map) [menu-bar elscreen])
-               (or force
-                   (elscreen-screen-modified-p 'elscreen-menu-bar-update)))
-      (let ((screen-list (sort (elscreen-get-screen-list) '<))
-            (screen-to-name-alist (elscreen-get-screen-to-name-alist))
-            (elscreen-menu nil))
-        (setq elscreen-menu
-              (mapcar
-               (lambda (screen)
-                 (list (string-to-char (number-to-string screen))
-                       'menu-item
-                       (format "%d%s %s" screen
-                               (elscreen-status-label screen)
-                               (elscreen-truncate-screen-name
-                                (get-alist screen screen-to-name-alist) 25))
-                       'elscreen-jump
-                       :keys (format "%s %d"
-                                     (key-description elscreen-prefix-key)
-                                     screen)))
-              screen-list))
-        (setq elscreen-menu
-              (nconc elscreen-menu elscreen-e21-menu-bar-command-entries))
-        (setq elscreen-menu
-              (cons 'keymap (cons "Select Screen" elscreen-menu)))
-        (define-key (current-global-map) [menu-bar elscreen]
-          (cons (copy-sequence "ElScreen") elscreen-menu)))))
+(defvar elscreen-e21-menu-bar-command-entries
+  (list (list 'elscreen-command-separator
+              'menu-item
+              "--")
+        (list 'elscreen-create
+              'menu-item
+              "Create Screen"
+              'elscreen-create
+              :help "Create a new screen and switch to it")
+        (list 'elscreen-clone
+              'menu-item
+              "Clone Screen"
+              'elscreen-clone
+              :help "Create a new screen with the window-configuration of current screen")
+        (list 'elscreen-kill
+              'menu-item
+              "Kill Screen"
+              'elscreen-kill
+              :help "Kill current screen")
+        (list 'elscreen-kill-screen-and-buffers
+              'menu-item
+              "Kill Screen and Buffers"
+              'elscreen-kill-screen-and-buffers
+              :help "Kill current screen and buffers")
+        (list 'elscreen-kill-others
+              'menu-item
+              "Kill Other Screens"
+              'elscreen-kill-others
+              :help "Kill other screens")
+        (list 'elscreen-next
+              'menu-item
+              "Next Screen"
+              'elscreen-next
+              :help "Switch to the \"next\" screen in a cyclic order")
+        (list 'elscreen-previous
+              'menu-item
+              "Previous Screen"
+              'elscreen-previous
+              :help "Switch to the \"previous\" screen in a cyclic order")
+        (list 'elscreen-toggle
+              'menu-item
+              "Toggle Screen"
+              'elscreen-toggle
+              :help "Toggle to the screen selected previously")
+        (list 'elscreen-command-separator
+              'menu-item
+              "--")
+        (list 'elscreen-toggle-display-screen-number
+              'menu-item
+              "Display Screen Number"
+              'elscreen-toggle-display-screen-number
+              :help "Display screen number on the mode line"
+              :button '(:toggle . elscreen-display-screen-number))
+        (list 'elscreen-toggle-display-tab
+              'menu-item
+              "Display Tab"
+              'elscreen-toggle-display-tab
+              :help "Display tab on the top of screen"
+              :button '(:toggle . elscreen-display-tab))))
 
-  (add-hook 'elscreen-screen-update-hook 'elscreen-e21-menu-bar-update)
-
-  ;; Tab
-  (defvar elscreen-e21-tab-format nil)
-  (make-variable-buffer-local 'elscreen-e21-tab-format)
-
-  (defsubst elscreen-e21-tab-create-keymap (&rest definitions)
-    (let ((keymap (make-sparse-keymap))
-          (key-function-pairs
-           (eval-when-compile
-             (mapcar
-              (lambda (key)
-                (cons key 'ignore))
-              (list 'mouse-1 'mouse-2 'mouse-3
-                    'down-mouse-1 'down-mouse-2 'down-mouse-3
-                    'drag-mouse-1 'drag-mouse-2 'drag-mouse-3)))))
-      (while definitions
-        (set-alist 'key-function-pairs (car definitions) (cadr definitions))
-        (setq definitions (cddr definitions)))
-      (mapc
-       (lambda (key-function-pair)
-         (let ((key (car key-function-pair))
-               (function (cdr key-function-pair)))
-           (define-key keymap (vector 'header-line key) function)))
-       key-function-pairs)
-      keymap))
-
-  (defsubst elscreen-e21-tab-width ()
-    (if (numberp elscreen-display-tab)
-        elscreen-display-tab
-      (let* ((number-of-screens (elscreen-get-number-of-screens))
-             (available-width
-              (- (frame-width) (if elscreen-tab-display-control 4 0)))
-             (tab-width
-              (round (- (/ available-width number-of-screens)
-                        (if elscreen-tab-display-kill-screen 5.5 1.5)))))
-        (max (min tab-width 16) 1))))
-
-  (defun elscreen-e21-tab-escape-% (string)
-    (if (string-match "%" string)
-        (let ((retval "")
-              start (end 0) substring)
-          (while (setq start end)
-            (setq end (next-property-change start string))
-            (setq substring (replace-regexp-in-string
-                             "%" "%%" (substring string start end)))
-            (set-text-properties 0 (length substring)
-                                 (text-properties-at start string) substring)
-            (setq retval (concat retval substring)))
-          retval)
-      string))
-
-  (defun elscreen-e21-tab-update (&optional force)
-    (when (and (not (window-minibuffer-p))
-               (or (elscreen-screen-modified-p 'elscreen-tab-update) force))
-      (walk-windows
-       (lambda (window)
-         (with-current-buffer (window-buffer window)
-           (when (and (boundp 'elscreen-e21-tab-format)
-                      (equal header-line-format elscreen-e21-tab-format)
-                      (or (not (eq (window-buffer window)
-                                   (window-buffer (frame-first-window))))
-                          (not elscreen-display-tab)))
-             (kill-local-variable 'elscreen-e21-tab-format)
-             (setq header-line-format nil))))
-       'other 'other)
-
-      (when elscreen-display-tab
-        (let ((screen-list (sort (elscreen-get-screen-list) '<))
-              (screen-to-name-alist (elscreen-get-screen-to-name-alist))
-              (current-screen (elscreen-get-current-screen))
-              (half-space (eval-when-compile
-                            (propertize
-                             " "
-                             'display '(space :width 0.5))))
-              (tab-separator (eval-when-compile
-                               (propertize
-                                " "
-                                'face 'elscreen-tab-background-face
-                                'display '(space :width 0.5))))
-              (control-tab (eval-when-compile
-                             (propertize
-                              "<->"
-                              'face 'elscreen-tab-control-face
-                              'local-map (elscreen-e21-tab-create-keymap
-                                          'mouse-1 'elscreen-previous
-                                          'mouse-2 'elscreen-create
-                                          'mouse-3 'elscreen-next)
-                              'help-echo "mouse-1: previous screen, mouse-2: create new screen, mouse-3: next screen"))))
-          (with-current-buffer (window-buffer (frame-first-window))
-            (kill-local-variable 'elscreen-e21-tab-format)
-            (when elscreen-tab-display-control
-              (setq elscreen-e21-tab-format
-                    (nconc
-                     elscreen-e21-tab-format
-                     (list
-                      control-tab
-                      tab-separator))))
-
-            (mapcar
-             (lambda (screen)
-               (let ((kill-screen
-                      (propertize
-                       "[X]"
-                       'local-map (elscreen-e21-tab-create-keymap
-                                   'mouse-1 `(lambda (e)
-                                               (interactive "e")
-                                               (elscreen-kill ,screen))
-                                   'M-mouse-1 `(lambda (e)
-                                                 (interactive "e")
-                                                 (elscreen-kill-screen-and-buffers ,screen)))
-                       'help-echo (format "mouse-1: kill screen %d, M-mouse-1: kill screen %d and buffers on it" screen screen))))
-                 (setq elscreen-e21-tab-format
-                       (nconc
-                        elscreen-e21-tab-format
-                        (list
-                         (propertize
-                          (concat
-                           (when (or (eq elscreen-tab-display-kill-screen 'left)
-                                     (eq elscreen-tab-display-kill-screen t))
-                             kill-screen)
-                           half-space
-                           (propertize
-                            (format "%d%s%s%s"
-                                    screen
-                                    (elscreen-status-label screen)
-                                    half-space
-                                    (elscreen-e21-tab-escape-%
-                                     (elscreen-truncate-screen-name
-                                      (get-alist screen screen-to-name-alist)
-                                      (elscreen-e21-tab-width) t)))
-                            'help-echo (get-alist screen screen-to-name-alist)
-                            'local-map (elscreen-e21-tab-create-keymap
-                                        'mouse-1 `(lambda (e)
-                                                    (interactive "e")
-                                                    (elscreen-goto ,screen))))
-                           (when (eq elscreen-tab-display-kill-screen 'right)
-                             (concat half-space kill-screen)))
-                          'face (if (eq current-screen screen)
-                                    'elscreen-tab-current-screen-face
-                                  'elscreen-tab-other-screen-face))
-                         tab-separator)))))
-               screen-list)
-
-            (setq elscreen-e21-tab-format
-                  (nconc
-                   elscreen-e21-tab-format
-                   (list
-                    (propertize
-                     (make-string (window-width) ?\ )
-                     'face 'elscreen-tab-background-face
-                     'local-map (elscreen-e21-tab-create-keymap)))))
-
-            (setq header-line-format elscreen-e21-tab-format))))))
-
-  (add-hook 'elscreen-screen-update-hook 'elscreen-e21-tab-update))
-
-;; XEmacs
-(static-when elscreen-on-xemacs
-  ;; Mode Line
-  (defvar elscreen-xmas-mode-line-string "[0]")
-  (defun elscreen-xmas-mode-line-update ()
-    (when (elscreen-screen-modified-p 'elscreen-xmas-mode-line-update)
-      (setq elscreen-xmas-mode-line-string
-            (format "[%d]" (elscreen-get-current-screen)))
-      (force-mode-line-update)))
-
-  (let ((point (memq 'global-mode-string mode-line-format))
-        (elscreen-mode-line-elm '(elscreen-display-screen-number
-                                  (" " elscreen-xmas-mode-line-string))))
-    (if (null (member elscreen-mode-line-elm mode-line-format))
-        (setcdr point (cons elscreen-mode-line-elm (cdr point)))))
-
-  (add-hook 'elscreen-screen-update-hook 'elscreen-xmas-mode-line-update)
-
-  ;; Menu
-  (defvar elscreen-xmas-menu-bar-command-entries
-    '("%_ElScreen"
-      :filter elscreen-xmas-menu-bar-filter
-      "----"
-      ["%_Create Screen" elscreen-create]
-      ["%_Clone Screen" elscreen-clone]
-      ["%_Kill Screen" elscreen-kill]
-      ["%_Kill Screen and Buffers" elscreen-kill-screen-and-buffers]
-      ["%_Kill Other Screens" elscreen-kill-others]
-      ["%_Next Screen" elscreen-next]
-      ["%_Previous Screen" elscreen-previous]
-      ["%_Toggle Screen" elscreen-toggle]
-      "----"
-      ["%_Display Screen Number" elscreen-toggle-display-screen-number
-       :style toggle :selected elscreen-display-screen-number]
-      ["%_Display Tab" elscreen-toggle-display-tab
-       :style toggle :selected elscreen-display-tab]))
-
-  (defconst elscreen-xmas-menubar (copy-sequence default-menubar))
-  (let ((menubar elscreen-xmas-menubar))
-    (catch 'buffers-menu-search
-      (while (car menubar)
-        (when (equal (car (car menubar)) "%_Buffers")
-          (throw 'buffers-menu-search menubar))
-        (setq menubar (cdr menubar))))
-    (setcdr menubar
-            (cons elscreen-xmas-menu-bar-command-entries (cdr menubar))))
-
-  (set-menubar elscreen-xmas-menubar)
-  (set-menubar-dirty-flag)
-
-  (defun elscreen-xmas-menu-bar-filter (menu)
+(defun elscreen-e21-menu-bar-update (&optional force)
+  (when (and (lookup-key (current-global-map) [menu-bar elscreen])
+             (or force
+                 (elscreen-screen-modified-p 'elscreen-menu-bar-update)))
     (let ((screen-list (sort (elscreen-get-screen-list) '<))
           (screen-to-name-alist (elscreen-get-screen-to-name-alist))
           (elscreen-menu nil))
       (setq elscreen-menu
             (mapcar
              (lambda (screen)
-               (vector (format "%d%s %s" screen
-                               (elscreen-status-label screen)
-                               (elscreen-truncate-screen-name
-                                (get-alist screen screen-to-name-alist) 25))
-                       `(elscreen-goto ,screen)
-                       :active t
-                       :keys (format "%s %d"
-                                     (key-description elscreen-prefix-key)
-                                     screen)))
+               (list (string-to-char (number-to-string screen))
+                     'menu-item
+                     (format "%d%s %s" screen
+                             (elscreen-status-label screen)
+                             (elscreen-truncate-screen-name
+                              (get-alist screen screen-to-name-alist) 25))
+                     'elscreen-jump
+                     :keys (format "%s %d"
+                                   (key-description elscreen-prefix-key)
+                                   screen)))
              screen-list))
-      (append elscreen-menu menu)))
+      (setq elscreen-menu
+            (nconc elscreen-menu elscreen-e21-menu-bar-command-entries))
+      (setq elscreen-menu
+            (cons 'keymap (cons "Select Screen" elscreen-menu)))
+      (define-key (current-global-map) [menu-bar elscreen]
+        (cons (copy-sequence "ElScreen") elscreen-menu)))))
+
+(add-hook 'elscreen-screen-update-hook 'elscreen-e21-menu-bar-update)
 
   ;; Tab
-  (defsubst elscreen-xmas-tab-width ()
-    (if (numberp elscreen-display-tab) elscreen-display-tab 16))
 
-  (defvar elscreen-xmas-tab-glyph (make-glyph))
-  (let* ((gutter-string (copy-sequence "\n"))
-         (gutter-elscreen-tab-extent (make-extent 0 1 gutter-string)))
-    (set-extent-begin-glyph gutter-elscreen-tab-extent elscreen-xmas-tab-glyph)
-    (mapcar
-     (lambda (console-type)
-       (when (valid-image-instantiator-format-p 'tab-control console-type)
-         (set-specifier top-gutter-border-width 0 'global console-type)
-         (set-gutter-element top-gutter 'elscreen-tab
-                             gutter-string 'global console-type)))
-     (console-type-list)))
+(defvar elscreen-e21-tab-format nil)
+(make-variable-buffer-local 'elscreen-e21-tab-format)
 
-  (defun elscreen-xmas-tab-update (&optional force)
-    (if (or (not elscreen-display-tab)
-            (window-dedicated-p (selected-window)))
-        (set-gutter-element-visible-p default-gutter-visible-p
-                                      'elscreen-tab nil)
-      (when (and (not (window-minibuffer-p))
-                 (or (elscreen-screen-modified-p 'elscreen-tab-update) force))
-        (set-gutter-element-visible-p default-gutter-visible-p
-                                      'elscreen-tab t)
-        (when (valid-image-instantiator-format-p 'tab-control)
-          (let* ((screen-list (sort (elscreen-get-screen-list) '<))
-                 (screen-to-name-alist (elscreen-get-screen-to-name-alist))
-                 (current-screen (elscreen-get-current-screen))
-                 (tab-items
-                  (mapcar
-                   (lambda (screen)
-                     (vector
-                      (format "%d%s %s" screen
-                              (elscreen-status-label screen)
-                              (elscreen-truncate-screen-name
-                               (get-alist screen screen-to-name-alist)
-                               (elscreen-xmas-tab-width) t))
-                      `(elscreen-goto ,screen)
-                      :selected (eq screen current-screen)))
-                   screen-list)))
-            (set-glyph-image
-             elscreen-xmas-tab-glyph
-             (vector 'tab-control
-                     :descriptor "ElScreen"
-                     :face 'default
-                     :orientation 'top
-                     :pixel-width '(gutter-pixel-width)
-                     :items tab-items)
-             (selected-frame)))
-          (set-gutter-dirty-p 'top)))))
+(defsubst elscreen-e21-tab-create-keymap (&rest definitions)
+  (let ((keymap (make-sparse-keymap))
+        (key-function-pairs
+         (eval-when-compile
+           (mapcar
+            (lambda (key)
+              (cons key 'ignore))
+            (list 'mouse-1 'mouse-2 'mouse-3
+                  'down-mouse-1 'down-mouse-2 'down-mouse-3
+                  'drag-mouse-1 'drag-mouse-2 'drag-mouse-3)))))
+    (while definitions
+      (set-alist 'key-function-pairs (car definitions) (cadr definitions))
+      (setq definitions (cddr definitions)))
+    (mapc
+     (lambda (key-function-pair)
+       (let ((key (car key-function-pair))
+             (function (cdr key-function-pair)))
+         (define-key keymap (vector 'header-line key) function)))
+     key-function-pairs)
+    keymap))
 
-  (add-hook 'elscreen-screen-update-hook 'elscreen-xmas-tab-update))
+(defsubst elscreen-e21-tab-width ()
+  (if (numberp elscreen-display-tab)
+      elscreen-display-tab
+    (let* ((number-of-screens (elscreen-get-number-of-screens))
+           (available-width
+            (- (frame-width) (if elscreen-tab-display-control 4 0)))
+           (tab-width
+            (round (- (/ available-width number-of-screens)
+                      (if elscreen-tab-display-kill-screen 5.5 1.5)))))
+      (max (min tab-width 16) 1))))
+
+(defun elscreen-e21-tab-escape-% (string)
+  (if (string-match "%" string)
+      (let ((retval "")
+            start (end 0) substring)
+        (while (setq start end)
+          (setq end (next-property-change start string))
+          (setq substring (replace-regexp-in-string
+                           "%" "%%" (substring string start end)))
+          (set-text-properties 0 (length substring)
+                               (text-properties-at start string) substring)
+          (setq retval (concat retval substring)))
+        retval)
+    string))
+
+(defun elscreen-e21-tab-update (&optional force)
+  (when (and (not (window-minibuffer-p))
+             (or (elscreen-screen-modified-p 'elscreen-tab-update) force))
+    (walk-windows
+     (lambda (window)
+       (with-current-buffer (window-buffer window)
+         (when (and (boundp 'elscreen-e21-tab-format)
+                    (equal header-line-format elscreen-e21-tab-format)
+                    (or (not (eq (window-buffer window)
+                                 (window-buffer (frame-first-window))))
+                        (not elscreen-display-tab)))
+           (kill-local-variable 'elscreen-e21-tab-format)
+           (setq header-line-format nil))))
+     'other 'other)
+
+    (when elscreen-display-tab
+      (let ((screen-list (sort (elscreen-get-screen-list) '<))
+            (screen-to-name-alist (elscreen-get-screen-to-name-alist))
+            (current-screen (elscreen-get-current-screen))
+            (half-space (eval-when-compile
+                          (propertize
+                           " "
+                           'display '(space :width 0.5))))
+            (tab-separator (eval-when-compile
+                             (propertize
+                              " "
+                              'face 'elscreen-tab-background-face
+                              'display '(space :width 0.5))))
+            (control-tab (eval-when-compile
+                           (propertize
+                            "<->"
+                            'face 'elscreen-tab-control-face
+                            'local-map (elscreen-e21-tab-create-keymap
+                                        'mouse-1 'elscreen-previous
+                                        'mouse-2 'elscreen-create
+                                        'mouse-3 'elscreen-next)
+                            'help-echo "mouse-1: previous screen, mouse-2: create new screen, mouse-3: next screen"))))
+        (with-current-buffer (window-buffer (frame-first-window))
+          (kill-local-variable 'elscreen-e21-tab-format)
+          (when elscreen-tab-display-control
+            (setq elscreen-e21-tab-format
+                  (nconc
+                   elscreen-e21-tab-format
+                   (list
+                    control-tab
+                    tab-separator))))
+
+          (mapcar
+           (lambda (screen)
+             (let ((kill-screen
+                    (propertize
+                     "[X]"
+                     'local-map (elscreen-e21-tab-create-keymap
+                                 'mouse-1 `(lambda (e)
+                                             (interactive "e")
+                                             (elscreen-kill ,screen))
+                                 'M-mouse-1 `(lambda (e)
+                                               (interactive "e")
+                                               (elscreen-kill-screen-and-buffers ,screen)))
+                     'help-echo (format "mouse-1: kill screen %d, M-mouse-1: kill screen %d and buffers on it" screen screen))))
+               (setq elscreen-e21-tab-format
+                     (nconc
+                      elscreen-e21-tab-format
+                      (list
+                       (propertize
+                        (concat
+                         (when (or (eq elscreen-tab-display-kill-screen 'left)
+                                   (eq elscreen-tab-display-kill-screen t))
+                           kill-screen)
+                         half-space
+                         (propertize
+                          (format "%d%s%s%s"
+                                  screen
+                                  (elscreen-status-label screen)
+                                  half-space
+                                  (elscreen-e21-tab-escape-%
+                                   (elscreen-truncate-screen-name
+                                    (get-alist screen screen-to-name-alist)
+                                    (elscreen-e21-tab-width) t)))
+                          'help-echo (get-alist screen screen-to-name-alist)
+                          'local-map (elscreen-e21-tab-create-keymap
+                                      'mouse-1 `(lambda (e)
+                                                  (interactive "e")
+                                                  (elscreen-goto ,screen))))
+                         (when (eq elscreen-tab-display-kill-screen 'right)
+                           (concat half-space kill-screen)))
+                        'face (if (eq current-screen screen)
+                                  'elscreen-tab-current-screen-face
+                                'elscreen-tab-other-screen-face))
+                       tab-separator)))))
+           screen-list)
+
+          (setq elscreen-e21-tab-format
+                (nconc
+                 elscreen-e21-tab-format
+                 (list
+                  (propertize
+                   (make-string (window-width) ?\ )
+                   'face 'elscreen-tab-background-face
+                   'local-map (elscreen-e21-tab-create-keymap)))))
+
+          (setq header-line-format elscreen-e21-tab-format))))))
+
+(add-hook 'elscreen-screen-update-hook 'elscreen-e21-tab-update)
+
 
 ;;; Command-line processing at startup time
 
@@ -1690,59 +1532,19 @@ Use \\[toggle-read-only] to permit editing."
                 '(("-elscreen-funcall" . elscreen-command-line-funcall)
                   ("-e"                . elscreen-command-line-funcall))))
 
-  (static-when elscreen-on-emacs
-    (defun elscreen-e21-command-line ()
-      (when (string-match "\\`-" argi)
-        (error "Unknown option `%s'" argi))
-      (setq file-count (1+ file-count))
-      (setq inhibit-startup-buffer-menu t)
-      (let* ((file
-              (expand-file-name
-               (command-line-normalize-file-name orig-argi)
-               dir)))
-        (elscreen-command-line-find-file file file-count line column))
-      (setq line 0)
-      (setq column 0)
-      t)
-
-    (add-hook 'after-init-hook (lambda ()
-                                 (add-to-list 'command-line-functions
-                                              'elscreen-e21-command-line t))))
-
-  (static-when elscreen-on-xemacs
-    (defadvice command-line-1 (around elscreen-xmas-command-line-1 activate)
-      (cond
-       ((null command-line-args-left)
-        ad-do-it)
-       (t
-        (let ((dir command-line-default-directory)
-              (file-count 0)
-              (line nil)
-              (end-of-options nil)
-              file-p arg tem)
-          (while command-line-args-left
-            (setq arg (pop command-line-args-left))
-            (cond
-             (end-of-options
-              (setq file-p t))
-             ((setq tem (when (eq (aref arg 0) ?-)
-                          (or (assoc arg command-switch-alist)
-                              (assoc (substring arg 1)
-                                     command-switch-alist))))
-              (funcall (cdr tem) arg))
-             ((string-match "\\`\\+[0-9]+\\'" arg)
-              (setq line (string-to-int arg)))
-             ((or (string= arg "-") (string= arg "--"))
-              (setq end-of-options t))
-             (t
-              (setq file-p t)))
-
-            (when file-p
-              (setq file-p nil)
-              (incf file-count)
-              (elscreen-command-line-find-file
-               (expand-file-name arg dir) file-count line)
-              (setq line nil)))))))))
+  (defun elscreen-e21-command-line ()
+    (when (string-match "\\`-" argi)
+      (error "Unknown option `%s'" argi))
+    (setq file-count (1+ file-count))
+    (setq inhibit-startup-buffer-menu t)
+    (let* ((file
+            (expand-file-name
+             (command-line-normalize-file-name orig-argi)
+             dir)))
+      (elscreen-command-line-find-file file file-count line column))
+    (setq line 0)
+    (setq column 0)
+    t))
 
 ;;; Unsupported Functions...
 
