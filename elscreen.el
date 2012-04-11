@@ -286,9 +286,9 @@ nil means don't display tabs."
   \\[elscreen-help]    Show this help"
   "Help shown by elscreen-help-mode")
 
-;;; alist utility functions:
+;;; alist utility functions (taken from APEL):
 
-(defun put-alist (key value alist)
+(defun elscreen--put-alist (key value alist)
   "Set cdr of an element (KEY . ...) in ALIST to VALUE and return ALIST.
 If there is no such element, create a new pair (KEY . VALUE) and
 return a new alist whose car is the new pair and cdr is ALIST."
@@ -299,24 +299,24 @@ return a new alist whose car is the new pair and cdr is ALIST."
           alist)
       (cons (cons key value) alist))))
 
-(defun set-alist (symbol key value)
+(defun elscreen--set-alist (symbol key value)
   "Set cdr of an element (KEY . ...) in the alist bound to SYMBOL to VALUE."
   (or (boundp symbol)
       (set symbol nil))
-  (set symbol (put-alist key value (symbol-value symbol))))
+  (set symbol (elscreen--put-alist key value (symbol-value symbol))))
 
-(defun remove-alist (symbol key)
-  "Delete an element whose car equals KEY from the alist bound to SYMBOL."
-  (and (boundp symbol)
-       (set symbol (del-alist key (symbol-value symbol)))))
-
-(defun del-alist (key alist)
+(defun elscreen--del-alist (key alist)
   "Delete an element whose car equals KEY from ALIST.
 Return the modified ALIST."
   (let ((pair (assoc key alist)))
     (if pair
         (delq pair alist)
       alist)))
+
+(defun elscreen--remove-alist (symbol key)
+  "Delete an element whose car equals KEY from the alist bound to SYMBOL."
+  (and (boundp symbol)
+       (set symbol (elscreen--del-alist key (symbol-value symbol)))))
 
 ;;; Internal Functions:
 
@@ -400,7 +400,7 @@ Return the value of the last form in BODY."
               (if keep-window-configuration
                   (elscreen-current-window-configuration)
                 (elscreen-default-window-configuration)))
-        (set-alist 'elscreen-frame-confs frame
+        (elscreen--set-alist 'elscreen-frame-confs frame
                    (list
                     (cons 'screen-property
                           (list
@@ -415,7 +415,7 @@ Return the value of the last form in BODY."
         (select-frame selected-frame)))))
 
 (defun elscreen-delete-frame-confs (frame)
-  (remove-alist 'elscreen-frame-confs frame))
+  (elscreen--remove-alist 'elscreen-frame-confs frame))
 
 (add-hook 'after-make-frame-functions 'elscreen-make-frame-confs)
 (add-hook 'delete-frame-functions 'elscreen-delete-frame-confs)
@@ -425,7 +425,7 @@ Return the value of the last form in BODY."
 
 (defsubst elscreen-set-conf-list (type conf-list)
   (let ((frame-conf (elscreen-get-frame-confs (selected-frame))))
-    (set-alist 'frame-conf type conf-list)))
+    (elscreen--set-alist 'frame-conf type conf-list)))
 
 (defun elscreen-get-screen-property (screen)
   (let ((screen-property-list (elscreen-get-conf-list 'screen-property)))
@@ -433,12 +433,12 @@ Return the value of the last form in BODY."
 
 (defun elscreen-set-screen-property (screen property)
   (let ((screen-property-list (elscreen-get-conf-list 'screen-property)))
-    (set-alist 'screen-property-list screen property)
+    (elscreen--set-alist 'screen-property-list screen property)
     (elscreen-set-conf-list 'screen-property screen-property-list)))
 
 (defun elscreen-delete-screen-property (screen)
   (let ((screen-property-list (elscreen-get-conf-list 'screen-property)))
-    (remove-alist 'screen-property-list screen)
+    (elscreen--remove-alist 'screen-property-list screen)
     (elscreen-set-conf-list 'screen-property screen-property-list)))
 
 (defun elscreen-get-number-of-screens ()
@@ -466,7 +466,7 @@ from `elscreen-frame-confs', a cons cell."
 (defun elscreen-set-window-configuration (screen winconf)
   "Set pair of window-configuration and marker of SCREEN to WINCONF."
   (let ((screen-property (elscreen-get-screen-property screen)))
-    (set-alist 'screen-property 'window-configuration winconf)
+    (elscreen--set-alist 'screen-property 'window-configuration winconf)
     (elscreen-set-screen-property screen screen-property)))
 
 (defun elscreen-get-screen-nickname (screen)
@@ -477,13 +477,13 @@ from `elscreen-frame-confs', a cons cell."
 (defun elscreen-set-screen-nickname (screen nickname)
   "Set nickname of SCREEN to NICKNAME."
   (let ((screen-property (elscreen-get-screen-property screen)))
-    (set-alist 'screen-property 'nickname nickname)
+    (elscreen--set-alist 'screen-property 'nickname nickname)
     (elscreen-set-screen-property screen screen-property)))
 
 (defun elscreen-delete-screen-nickname (screen)
   "Remove nickname of SCREEN from `elscreen-frame-confs'."
   (let ((screen-property (elscreen-get-screen-property screen)))
-    (remove-alist 'screen-property 'nickname)
+    (elscreen--remove-alist 'screen-property 'nickname)
     (elscreen-set-screen-property screen screen-property)))
 
 (defun elscreen-append-screen-to-history (screen)
@@ -684,7 +684,7 @@ from `elscreen-frame-confs', a cons cell."
                (setq screen-name
                      (mapconcat 'identity (reverse nickname-list) ":"))))
 
-           (set-alist 'screen-to-name-alist screen screen-name))
+           (elscreen--set-alist 'screen-to-name-alist screen screen-name))
          screen-list))
 
        (elscreen-set-screen-to-name-alist-cache screen-to-name-alist))))
@@ -1380,7 +1380,7 @@ Use \\[toggle-read-only] to permit editing."
                   'down-mouse-1 'down-mouse-2 'down-mouse-3
                   'drag-mouse-1 'drag-mouse-2 'drag-mouse-3)))))
     (while definitions
-      (set-alist 'key-function-pairs (car definitions) (cadr definitions))
+      (elscreen--set-alist 'key-function-pairs (car definitions) (cadr definitions))
       (setq definitions (cddr definitions)))
     (mapc
      (lambda (key-function-pair)
