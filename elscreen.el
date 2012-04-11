@@ -2,13 +2,14 @@
 ;;
 ;; elscreen.el
 ;;
-(defconst elscreen-version "1.4.6 (December 30, 2007)")
+
 ;;
 ;; Author:   Naoto Morishima <naoto@morishima.net>
 ;; Based on: screens.el
 ;;              by Heikki T. Suopanki <suopanki@stekt1.oulu.fi>
 ;; Created:  June 22, 1996
 ;; Revised:  December 30, 2007
+;; Modified and prepared for package.el by shosti on April 11, 2012
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -25,12 +26,12 @@
 ;; the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 (provide 'elscreen)
-(require 'alist)
 
 ;;; User Customizable Variables:
 
+(defconst elscreen-version "1.4.6 (December 30, 2007)")
 (defgroup elscreen nil
-  "ElScreen -- Screen Manager for Emacsen"
+  "ElScreen -- Screen Manager for Emacs"
   :tag "ElScreen"
   :group 'environment)
 
@@ -285,6 +286,37 @@ nil means don't display tabs."
   \\[elscreen-help]    Show this help"
   "Help shown by elscreen-help-mode")
 
+;;; alist utility functions:
+
+(defun put-alist (key value alist)
+  "Set cdr of an element (KEY . ...) in ALIST to VALUE and return ALIST.
+If there is no such element, create a new pair (KEY . VALUE) and
+return a new alist whose car is the new pair and cdr is ALIST."
+  (let ((elm (assoc key alist)))
+    (if elm
+        (progn
+          (setcdr elm value)
+          alist)
+      (cons (cons key value) alist))))
+
+(defun set-alist (symbol key value)
+  "Set cdr of an element (KEY . ...) in the alist bound to SYMBOL to VALUE."
+  (or (boundp symbol)
+      (set symbol nil))
+  (set symbol (put-alist key value (symbol-value symbol))))
+
+(defun remove-alist (symbol key)
+  "Delete an element whose car equals KEY from the alist bound to SYMBOL."
+  (and (boundp symbol)
+       (set symbol (del-alist key (symbol-value symbol)))))
+
+(defun del-alist (key alist)
+  "Delete an element whose car equals KEY from ALIST.
+Return the modified ALIST."
+  (let ((pair (assoc key alist)))
+    (if pair
+        (delq pair alist)
+      alist)))
 
 ;;; Internal Functions:
 
@@ -1579,6 +1611,7 @@ Use \\[toggle-read-only] to permit editing."
 ;;; Start ElScreen!
 
 (defun elscreen-start ()
+  (interactive)
   (mapcar
    (lambda (frame)
      (elscreen-make-frame-confs frame 'keep))
@@ -1586,5 +1619,3 @@ Use \\[toggle-read-only] to permit editing."
   (let ((prefix-key elscreen-prefix-key)
         (elscreen-prefix-key nil))
     (elscreen-set-prefix-key prefix-key)))
-
-(elscreen-start)
