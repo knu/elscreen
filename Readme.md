@@ -29,7 +29,7 @@ like the following in your `.emacs.d` file:
     (add-to-list 'package-archives
          '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
-Once you have installed EScreen, you can activate it like so:
+Once you have installed ElScreen, you can activate it like so:
 
     (elscreen-start)
 
