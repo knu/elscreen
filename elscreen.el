@@ -1,15 +1,14 @@
-;; -*- Mode: Emacs-Lisp -*-
-;;
-;; elscreen.el
-;;
+;;; elscreen.el --- Emacs window session manager
 
-;;
-;; Author:   Naoto Morishima <naoto@morishima.net>
+;; Author: Naoto Morishima <naoto@morishima.net>
 ;; Based on: screens.el
 ;;              by Heikki T. Suopanki <suopanki@stekt1.oulu.fi>
 ;; Created:  June 22, 1996
-;; Revised:  December 30, 2007
-;; Modified and prepared for package.el by shosti on April 11, 2012
+;; Revised:  April 11, 2012 by Emanuel Evans
+
+;; This file is NOT part of GNU Emacs.
+
+;;; License:
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -25,11 +24,12 @@
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-(provide 'elscreen)
+;;; Code:
 
 ;;; User Customizable Variables:
 
-(defconst elscreen-version "1.4.6 (December 30, 2007)")
+(defconst elscreen-version "2012-04-11")
+
 (defgroup elscreen nil
   "ElScreen -- Screen Manager for Emacs"
   :tag "ElScreen"
@@ -1619,3 +1619,7 @@ Use \\[toggle-read-only] to permit editing."
   (let ((prefix-key elscreen-prefix-key)
         (elscreen-prefix-key nil))
     (elscreen-set-prefix-key prefix-key)))
+
+(provide 'elscreen)
+
+;;; elscreen.el ends here
