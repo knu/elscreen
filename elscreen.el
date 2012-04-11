@@ -22,7 +22,16 @@
 ;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; see the file COPYING.  If not, write to
-;; the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+;; the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139,
+;; USA.
+
+;;; Commentary:
+
+;; This is a fork of ElScreen designed to be installed with
+;; package.el.  It does not require APEL (it also probably does not
+;; work with XEmacs).  In order to start using ElScreen, add
+;; (elscreen-start) to your emacs configuration.  For help on how to
+;; use elscreen, try \C-z ?.
 
 ;;; Code:
 
