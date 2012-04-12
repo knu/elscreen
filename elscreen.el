@@ -842,7 +842,6 @@ Default value for SEC is 3."
 
 ;;; User Interfaces:
 
-;;;###autoload
 (defun elscreen-create ()
   "Create a new screen and switch to it."
   (interactive)
@@ -850,7 +849,6 @@ Default value for SEC is 3."
     (if screen
         (elscreen-goto screen))))
 
-;;;###autoload
 (defun elscreen-clone (&optional screen)
   "Create a new screen with the window-configuration of SCREEN.
 If SCREEN is ommitted, current-screen is used."
@@ -869,7 +867,6 @@ If SCREEN is ommitted, current-screen is used."
      (elscreen-goto clone)))))
 
 (defvar elscreen-kill-hook nil)
-;;;###autoload
 (defun elscreen-kill (&optional screen)
   "Kill SCREEN.  If optional argument SCREEN is
 ommitted, current-screen is killed."
@@ -890,7 +887,6 @@ ommitted, current-screen is killed."
       (run-hooks 'elscreen-kill-hook)
       screen))))
 
-;;;###autoload
 (defun elscreen-kill-screen-and-buffers (&optional screen)
   "Kill buffers on SCREEN and SCREEN itself.  If optional
 argument SCREEN is omitted, current screen is killed."
@@ -908,7 +904,6 @@ argument SCREEN is omitted, current screen is killed."
          (mapcar 'window-buffer (window-list))))
       screen)))
 
-;;;###autoload
 (defun elscreen-kill-others (&optional screen)
   "Kill screens other than SCREEN.  If optional argument SCREEN
 is ommitted, current screen will survive."
@@ -939,7 +934,6 @@ is ommitted, current screen will survive."
     screen-list))
 
 (defvar elscreen-goto-hook nil)
-;;;###autoload
 (defun elscreen-goto (screen)
   "Switch to screen SCREEN."
   (interactive "NGoto screen number: ")
@@ -958,7 +952,6 @@ is ommitted, current screen will survive."
     (elscreen-message (format "No screen %d" screen))
     nil)))
 
-;;;###autoload
 (defun elscreen-next ()
   "Switch to the next screen."
   (interactive)
@@ -974,7 +967,6 @@ is ommitted, current screen will survive."
                 (car screen-list))))
       (elscreen-goto next-screen)))))
 
-;;;###autoload
 (defun elscreen-previous ()
   "Switch to the previous screen."
   (interactive)
@@ -990,7 +982,6 @@ is ommitted, current screen will survive."
                 (car screen-list))))
       (elscreen-goto previous-screen)))))
 
-;;;###autoload
 (defun elscreen-toggle ()
   "Toggle to the screen selected previously."
   (interactive)
@@ -1002,7 +993,6 @@ is ommitted, current screen will survive."
    (t
     (elscreen-goto (elscreen-get-previous-screen)))))
 
-;;;###autoload
 (defun elscreen-jump ()
   "Switch to specified screen."
   (interactive)
@@ -1012,7 +1002,6 @@ is ommitted, current screen will survive."
 (defalias 'elscreen-jump-0 'elscreen-jump)
 (defalias 'elscreen-jump-9 'elscreen-jump)
 
-;;;###autoload
 (defun elscreen-swap ()
   "Interchange screens selected currently and previously."
   (interactive)
@@ -1030,7 +1019,6 @@ is ommitted, current screen will survive."
       (elscreen-set-screen-property previous-screen current-screen-property)
       (elscreen-goto-internal (elscreen-get-current-screen))))))
 
-;;;###autoload
 (defun elscreen-screen-nickname (nickname)
   "Set nickname for current screen to NICKNAME."
   (interactive "sSet window title to: ")
@@ -1041,7 +1029,6 @@ is ommitted, current screen will survive."
     (elscreen-set-screen-nickname (elscreen-get-current-screen) nickname)))
   (elscreen-notify-screen-modification 'force))
 
-;;;###autoload
 (defun elscreen-display-screen-name-list ()
   "Display the list of screens in mini-buffer."
   (interactive)
@@ -1064,7 +1051,6 @@ is ommitted, current screen will survive."
   (add-to-list 'elscreen-help-symbol-list help-symbol t))
 (elscreen-set-help 'elscreen-help)
 
-;;;###autoload
 (defun elscreen-help ()
   "Show key bindings of ElScreen and Add-On softwares."
   (interactive)
@@ -1077,33 +1063,28 @@ is ommitted, current screen will survive."
 
 ;;; Utility Functions
 
-;;;###autoload
 (defun elscreen-display-version ()
   "Display ElScreen version."
   (interactive)
   (elscreen-message (concat "ElScreen version " elscreen-version)))
 
-;;;###autoload
 (defun elscreen-toggle-display-screen-number ()
   "Toggle the screen number in the mode line."
   (interactive)
   (setq elscreen-display-screen-number (null elscreen-display-screen-number))
   (elscreen-notify-screen-modification 'force))
 
-;;;###autoload
 (defun elscreen-toggle-display-tab ()
   "Toggle the tab on the top of screen."
   (interactive)
   (setq elscreen-display-tab (null elscreen-display-tab))
   (elscreen-notify-screen-modification 'force))
 
-;;;###autoload
 (defun elscreen-display-last-message ()
   "Repeat the last message displayed in the mini-buffer."
   (interactive)
   (elscreen-message elscreen-last-message 5))
 
-;;;###autoload
 (defun elscreen-display-time ()
   "Show system information."
   (interactive)
@@ -1116,7 +1097,6 @@ is ommitted, current screen will survive."
               (format "%.2f" (/ load 100.0)))
             (load-average) " "))))
 
-;;;###autoload
 (defun elscreen-select-and-goto ()
   (interactive)
   (let* ((screen-list (sort (elscreen-get-screen-list) '<))
@@ -1205,7 +1185,6 @@ is ommitted, current screen will survive."
      (t
       (elscreen-goto (string-to-number command-or-target-screen))))))
 
-;;;###autoload
 (defun elscreen-find-and-goto-by-buffer (&optional buffer create noselect)
   "Go to the screen that has the window with buffer BUFFER,
 creating one if none already exists."
@@ -1225,7 +1204,6 @@ creating one if none already exists."
         (select-window (get-buffer-window buffer-name))))
     target-screen))
 
-;;;###autoload
 (defun elscreen-find-file (filename)
   "Edit file FILENAME.
 Switch to a screen visiting file FILENAME,
@@ -1233,7 +1211,6 @@ creating one if none already exists."
   (interactive "FFind file in new screen: ")
   (elscreen-find-and-goto-by-buffer (find-file-noselect filename) 'create))
 
-;;;###autoload
 (defun elscreen-find-file-read-only (filename)
   "Edit file FILENAME with new screen but don't allow changes.
 Like \\[elscreen-find-file] but marks buffer as read-only.
@@ -1242,14 +1219,12 @@ Use \\[toggle-read-only] to permit editing."
   (elscreen-find-file filename)
   (setq buffer-read-only t))
 
-;;;###autoload
 (defun elscreen-dired (dirname &optional switches)
   (interactive (progn
                  (or (featurep 'dired) (require 'dired))
                  (dired-read-dir-and-switches "in new screen ")))
   (elscreen-find-and-goto-by-buffer (dired-noselect dirname switches) 'create))
 
-;;;###autoload
 (defun elscreen-execute-extended-command (prefix-arg)
   (interactive "P")
   (let ((prefix-arg prefix-arg)
