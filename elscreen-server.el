@@ -39,10 +39,12 @@
     (when (and elscreen-server-dont-use-dedicated-frame
                (framep dframe-attached-frame))
       (select-frame dframe-attached-frame))
-    (elscreen-goto (car (mapcar
-                         (lambda (buffer)
-                           (elscreen-find-screen-by-buffer buffer 'create))
-                         buffer-list)))
+    (let ((screen (car (mapcar
+                        (lambda (buffer)
+                          (elscreen-find-screen-by-buffer buffer 'create))
+                        buffer-list))))
+      (and screen
+           (elscreen-goto screen)))
     (elscreen-notify-screen-modification 'force-immediately)
     (select-frame selected-frame)))
 
