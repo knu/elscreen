@@ -988,7 +988,7 @@ is ommitted, current screen will survive."
 (defun elscreen-jump ()
   "Switch to specified screen."
   (interactive)
-  (let ((next-screen (string-to-number (string last-command-char))))
+  (let ((next-screen (string-to-number (string last-command-event))))
     (if (and (<= 0 next-screen) (<= next-screen 9))
         (elscreen-goto next-screen))))
 (defalias 'elscreen-jump-0 'elscreen-jump)
