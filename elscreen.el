@@ -110,7 +110,7 @@ buffer-name and corresponding screen-name."
            (elscreen-rebuild-buffer-to-nickname-alist)))
   :group 'elscreen)
 
-(static-when (>= emacs-major-version 24)
+(static-when (< emacs-major-version 24)
 
 (defcustom elscreen-startup-command-line-processing t
   "*If non-nil, ElScreen processes command line when Emacsen
@@ -119,7 +119,7 @@ starts up, and opens files with new screen if needed."
   :tag "Enable/Disable ElScreen to Process Command Line Arguments"
   :group 'elscreen)
 
-) ; (>= emacs-major-version 24)
+) ; (< emacs-major-version 24)
 
 (defcustom elscreen-display-screen-number t
   "*Non-nil to display the number of current screen in the mode line."
@@ -1655,7 +1655,7 @@ Use \\[toggle-read-only] to permit editing."
 
 ; In Emacs 24 or later there is no access to file-count, line, column,
 ; etc., so we cannot implement command-line processing this way.
-(static-when (>= emacs-major-version 24)
+(static-when (< emacs-major-version 24)
 
 (defun elscreen-command-line-funcall (switch-string)
   (let ((argval (intern (car command-line-args-left)))
@@ -1773,7 +1773,7 @@ Use \\[toggle-read-only] to permit editing."
                (expand-file-name arg dir) file-count line)
               (setq line nil)))))))))
 
-) ; (>= emacs-major-version 24)
+) ; (< emacs-major-version 24)
 
 ;;; Unsupported Functions...
 
