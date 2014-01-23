@@ -518,9 +518,7 @@ Key bindings:
     ;; prepare candidate window
     (save-window-excursion
       (setq frame-last-window
-            (previous-window (static-if elscreen-on-xemacs
-                                 (frame-highest-window)
-                               (frame-first-window))))
+            (previous-window (frame-first-window)))
       (while (minibuffer-window-active-p frame-last-window)
         (setq frame-last-window (previous-window frame-last-window)))
       (while (and (not (one-window-p))
