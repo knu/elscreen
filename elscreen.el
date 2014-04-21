@@ -37,8 +37,9 @@
 
 ;;; User Customizable Variables:
 
-(require 'iswitchb)
 (require 'dired)
+
+(declare-function iswitchb-read-buffer "iswitchb")
 
 (defconst elscreen-version "2012-09-21")
 
