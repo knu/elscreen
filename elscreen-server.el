@@ -26,6 +26,7 @@
 ;;; Code:
 
 (require 'elscreen)
+(require 'dframe)
 
 (defcustom elscreen-server-dont-use-dedicated-frame t
   "*Non-nil to use dframe-attached-frame if frame is dedicated."
@@ -35,8 +36,7 @@
 (defun elscreen-server-visit-files-new-screen (buffer-list)
   "Create a screen for each buffer in BUFFER-LIST."
   (let* ((selected-frame (selected-frame))
-         (dframe-attached-frame (and (fboundp 'dframe-attached-frame)
-                                     (dframe-attached-frame selected-frame))))
+         (dframe-attached-frame (dframe-attached-frame selected-frame)))
     (when (and elscreen-server-dont-use-dedicated-frame
                (framep dframe-attached-frame))
       (select-frame dframe-attached-frame))
@@ -53,47 +53,7 @@
   ;; For server.el distributed with GNU Emacs
   '(progn
      (defadvice server-visit-files (after elscreen-server-visit-files activate)
-       (elscreen-server-visit-files-new-screen
-        (if (processp (car ad-return-value))
-            ;; Before multi-tty; server-visit-files returns a list of proc
-            ;; and client-record.
-            (cdr ad-return-value)
-          ;; After multi-tty was merged; in server.el r1.131 or later, it
-          ;; returns only client-record.
-          ad-return-value)))))
-
-(eval-after-load "gnuserv"
-  '(progn
-     (elscreen-server-defcustom-dont-use-dedicated-frame 'gnuserv)
-
-     (defun elscreen-server-find-buffer-visiting (filename)
-       (if (file-directory-p filename)
-           (car (dired-buffers-for-dir filename))
-         (find-buffer-visiting filename)))
-
-     (cond
-      ((fboundp 'gnuserv-edit-files)
-       ;; For (current) gnuserv typically used with XEmacs
-       (defadvice gnuserv-edit-files (around elscreen-gnuserv-edit-files activate)
-         (let ((filename-list (mapcar 'cdr list))
-               (gnuserv-frame t))
-           (save-window-excursion ad-do-it)
-           (elscreen-server-visit-files-new-screen
-            (mapcar 'elscreen-server-find-buffer-visiting filename-list)))))
-      ((fboundp 'server-find-file)
-       ;; For (ancient) gnuserv typically used with Meadow
-       (defadvice server-edit-files (around elscreen-server-edit-files activate)
-         (let ((filename-list (mapcar 'cdr list))
-               (gnuserv-frame (selected-frame)))
-           (save-window-excursion ad-do-it)
-           (elscreen-server-visit-files-new-screen
-            (mapcar 'elscreen-server-find-buffer-visiting filename-list))))
-       (defadvice server-edit-files-quickly (around elscreen-server-edit-files-quickly activate)
-         (let ((filename-list (mapcar 'cdr list))
-               (gnuserv-frame (selected-frame)))
-           (save-window-excursion ad-do-it)
-           (elscreen-server-visit-files-new-screen
-            (mapcar 'elscreen-server-find-buffer-visiting filename-list))))))))
+       (elscreen-server-visit-files-new-screen ad-return-value))))
 
 (provide 'elscreen-server)
 ;;; elscreen-server.el ends here
