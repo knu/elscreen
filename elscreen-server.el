@@ -1,6 +1,4 @@
-;; -*- Mode: Emacs-Lisp -*-
-;;
-;; elscreen-server.el
+;;; elscreen-server.el --- server support for elscreen
 ;;
 (defconst elscreen-server-version "0.2.0 (November 23, 2007)")
 ;;
@@ -23,7 +21,10 @@
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-(provide 'elscreen-server)
+;;; Commentary:
+
+;;; Code:
+
 (require 'elscreen)
 
 (defmacro elscreen-server-defcustom-dont-use-dedicated-frame (type)
@@ -95,3 +96,6 @@
            (save-window-excursion ad-do-it)
            (elscreen-server-visit-files-new-screen
             (mapcar 'elscreen-server-find-buffer-visiting filename-list))))))))
+
+(provide 'elscreen-server)
+;;; elscreen-server.el ends here
