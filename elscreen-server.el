@@ -27,13 +27,13 @@
 
 (require 'elscreen)
 
-(defmacro elscreen-server-defcustom-dont-use-dedicated-frame (type)
-  `(defcustom elscreen-server-dont-use-dedicated-frame t
-     "*Non-nil to use dframe-attached-frame if frame is dedicated"
-     :type 'boolean
-     :group ,type))
+(defcustom elscreen-server-dont-use-dedicated-frame t
+  "*Non-nil to use dframe-attached-frame if frame is dedicated."
+  :type 'boolean
+  :group 'server)
 
-(defsubst elscreen-server-visit-files-new-screen (buffer-list)
+(defun elscreen-server-visit-files-new-screen (buffer-list)
+  "Create a screen for each buffer in BUFFER-LIST."
   (let* ((selected-frame (selected-frame))
          (dframe-attached-frame (and (fboundp 'dframe-attached-frame)
                                      (dframe-attached-frame selected-frame))))
@@ -52,8 +52,6 @@
 (eval-after-load "server"
   ;; For server.el distributed with GNU Emacs
   '(progn
-     (elscreen-server-defcustom-dont-use-dedicated-frame 'server)
-
      (defadvice server-visit-files (after elscreen-server-visit-files activate)
        (elscreen-server-visit-files-new-screen
         (if (processp (car ad-return-value))
