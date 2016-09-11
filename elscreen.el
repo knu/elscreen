@@ -1294,7 +1294,7 @@ Use \\[toggle-read-only] to permit editing."
 (let ((point (memq 'mode-line-position mode-line-format))
       (elscreen-mode-line-elm '(elscreen-display-screen-number
                                 (" " elscreen-mode-line-string))))
-  (when (null (member elscreen-mode-line-elm mode-line-format))
+  (when (and (null (member elscreen-mode-line-elm mode-line-format)) point)
     (setcdr point (cons elscreen-mode-line-elm (cdr point)))))
 
 (add-hook 'elscreen-screen-update-hook 'elscreen-mode-line-update)
