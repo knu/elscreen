@@ -26,7 +26,6 @@
 
 (provide 'elscreen-gf)
 (require 'elscreen)
-(require 'poe)
 (eval-when-compile
   (require 'static))
 
@@ -171,14 +170,6 @@
 
 (defvar elscreen-gf-invoke-point-history
   (make-ring elscreen-gf-invoke-point-history-length))
-
-(eval-when-compile
-  (defun-maybe line-number-at-pos (&optional pos)
-    (let ((opoint (or pos (point))))
-      (save-excursion
-        (goto-char opoint)
-        (forward-line 0)
-        (1+ (count-lines (point-min) (point)))))))
 
 (defsubst elscreen-gf-overlay-create (start end face)
   (let ((overlay (make-overlay start end)))
