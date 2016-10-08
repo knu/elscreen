@@ -417,6 +417,8 @@ Key bindings:
   (elscreen-gf-mode-jump-to-entry)
   (toggle-read-only 'read-only))
 
+(defvar elscreen-gf-search-process nil)
+
 (defun elscreen-gf-mode-search-quit (&optional force)
   (interactive)
   (when (and (not (elscreen-gf-process-exclusive-p
@@ -543,7 +545,6 @@ Key bindings:
            option-defs)
         (kill-buffer candidate-buffer)))))
 
-(defvar elscreen-gf-search-process nil)
 (defsubst elscreen-gf-run-search-command (command-name pattern command directory line-parser)
   (put 'elscreen-gf-mode 'elscreen-gf-major-mode-thing
        (or (get major-mode 'elscreen-gf-major-mode-thing) 'word))
