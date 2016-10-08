@@ -282,7 +282,8 @@ Key bindings:
   (let ((current-line (line-number-at-pos)))
     (cond
      ((< current-line 4)
-      (goto-line 4))
+      (goto-char (point-min))
+      (forward-line 3))
      ((< current-line (line-number-at-pos (point-max)))
       (forward-line 1)))
     (elscreen-gf-mode-selected-entry-overlay)))
@@ -295,7 +296,8 @@ Key bindings:
      ((< 4 current-line)
       (forward-line -1))
      (t
-      (goto-line 4)))
+      (goto-char (point-min))
+      (forward-line 3)))
     (elscreen-gf-mode-selected-entry-overlay)))
 
 (defun elscreen-gf-mode-scroll-up ()
@@ -313,7 +315,8 @@ Key bindings:
 (defun elscreen-gf-mode-beginning-of-buffer ()
   "Move the current entry to the beginning of the entries."
   (interactive)
-  (goto-line 4)
+  (goto-char (point-min))
+  (forward-line 3)
   (elscreen-gf-mode-selected-entry-overlay))
 
 (defun elscreen-gf-mode-end-of-buffer ()
@@ -392,7 +395,8 @@ Key bindings:
                 (elscreen-gf-major-mode-token-chars 'elscreen-gf-mode)
                 "a-zA-Z0-9"))
       (setq nontoken-chars (format "[^%s]" token-chars))
-      (goto-line line)
+      (goto-char (point-min))
+      (forward-line (1- line))
       (let ((case-fold-search nil))
         (goto-char (or (and (re-search-forward
                              (format "\\(^\\|%s\\)\\(%s\\)\\(%s\\|$\\)"
