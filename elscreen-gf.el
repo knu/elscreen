@@ -996,7 +996,7 @@ in the ElScreen-GF buffer."
         ;; invoke-point-buffer and moving point to invoke-point-position.
         (elscreen-goto (car invoke-point-buffer-screen-list))
         (select-window (get-buffer-window invoke-point-buffer))
-        (goto-char (invoke-point-position)))))))
+        (goto-char invoke-point-position))))))
 
 ;;; Help
 
