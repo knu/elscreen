@@ -415,7 +415,7 @@ Key bindings:
 (defun elscreen-gf-mode-jump-to-entry-read-only ()
   (interactive)
   (elscreen-gf-mode-jump-to-entry)
-  (toggle-read-only 'read-only))
+  (read-only-mode 'toggle))
 
 (defvar elscreen-gf-search-process nil)
 
