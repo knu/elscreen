@@ -526,7 +526,7 @@ Key bindings:
       (suppress-keymap minibuffer-map t)
       (define-key minibuffer-map "\C-m" 'undefined)
       (define-key minibuffer-map "\C-g" 'abort-recursive-edit)
-      (mapcar
+      (mapc
        (lambda (option-def)
          (define-key minibuffer-map (car option-def) 'self-insert-and-exit))
        option-defs)
