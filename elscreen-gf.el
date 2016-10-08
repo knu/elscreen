@@ -451,7 +451,7 @@ Key bindings:
 
 ;;; Fundamental functions shared among GNU grep/GNI ID Utils/cscope/GNU global
 
-(defsubst elscreen-gf-process-exclusive-p (process &optional noerror)
+(defun elscreen-gf-process-exclusive-p (process &optional noerror)
   (let ((exclusive-p (not (and (processp process)
                                (eq (process-status process) 'run)))))
     (when (not (or exclusive-p noerror))
