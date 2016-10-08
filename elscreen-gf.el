@@ -26,8 +26,6 @@
 
 (provide 'elscreen-gf)
 (require 'elscreen)
-(eval-when-compile
-  (require 'static))
 
 ;;; User Customizable Variables:
 
