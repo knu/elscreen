@@ -71,6 +71,8 @@
   :type 'boolean
   :group 'elscreen-gf)
 
+(defvar elscreen-gf-invoke-point-history)
+
 (defcustom elscreen-gf-invoke-point-history-length 8
   "Length of histories for the locations where gf searchs were invoked."
   :tag "Length of histries for invoke-point."
