@@ -26,6 +26,7 @@
 
 (provide 'elscreen-gf)
 (require 'elscreen)
+(require 'ring)
 
 ;;; User Customizable Variables:
 
