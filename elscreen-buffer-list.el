@@ -85,7 +85,7 @@
   (interactive "P")
   (setq elscreen-buffer-list-enabled
         (cond ((null arg) (not elscreen-buffer-list-enabled))
-              (> arg 0)))
+              (t (> arg 0))))
   (message "Screen-specific buffer lists %s"
 	   (if elscreen-buffer-list-enabled "enabled" "disabled")))
 
