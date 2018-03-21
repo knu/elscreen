@@ -26,9 +26,7 @@
 
 (provide 'elscreen-gf)
 (require 'elscreen)
-(require 'poe)
-(eval-when-compile
-  (require 'static))
+(require 'ring)
 
 ;;; User Customizable Variables:
 
@@ -72,6 +70,8 @@
   :tag "Truncate lines in ElScreen-GF mode."
   :type 'boolean
   :group 'elscreen-gf)
+
+(defvar elscreen-gf-invoke-point-history)
 
 (defcustom elscreen-gf-invoke-point-history-length 8
   "Length of histories for the locations where gf searchs were invoked."
@@ -171,14 +171,6 @@
 
 (defvar elscreen-gf-invoke-point-history
   (make-ring elscreen-gf-invoke-point-history-length))
-
-(eval-when-compile
-  (defun-maybe line-number-at-pos (&optional pos)
-    (let ((opoint (or pos (point))))
-      (save-excursion
-        (goto-char opoint)
-        (forward-line 0)
-        (1+ (count-lines (point-min) (point)))))))
 
 (defsubst elscreen-gf-overlay-create (start end face)
   (let ((overlay (make-overlay start end)))
@@ -292,7 +284,8 @@ Key bindings:
   (let ((current-line (line-number-at-pos)))
     (cond
      ((< current-line 4)
-      (goto-line 4))
+      (goto-char (point-min))
+      (forward-line 3))
      ((< current-line (line-number-at-pos (point-max)))
       (forward-line 1)))
     (elscreen-gf-mode-selected-entry-overlay)))
@@ -305,7 +298,8 @@ Key bindings:
      ((< 4 current-line)
       (forward-line -1))
      (t
-      (goto-line 4)))
+      (goto-char (point-min))
+      (forward-line 3)))
     (elscreen-gf-mode-selected-entry-overlay)))
 
 (defun elscreen-gf-mode-scroll-up ()
@@ -323,7 +317,8 @@ Key bindings:
 (defun elscreen-gf-mode-beginning-of-buffer ()
   "Move the current entry to the beginning of the entries."
   (interactive)
-  (goto-line 4)
+  (goto-char (point-min))
+  (forward-line 3)
   (elscreen-gf-mode-selected-entry-overlay))
 
 (defun elscreen-gf-mode-end-of-buffer ()
@@ -402,7 +397,8 @@ Key bindings:
                 (elscreen-gf-major-mode-token-chars 'elscreen-gf-mode)
                 "a-zA-Z0-9"))
       (setq nontoken-chars (format "[^%s]" token-chars))
-      (goto-line line)
+      (goto-char (point-min))
+      (forward-line (1- line))
       (let ((case-fold-search nil))
         (goto-char (or (and (re-search-forward
                              (format "\\(^\\|%s\\)\\(%s\\)\\(%s\\|$\\)"
@@ -419,7 +415,9 @@ Key bindings:
 (defun elscreen-gf-mode-jump-to-entry-read-only ()
   (interactive)
   (elscreen-gf-mode-jump-to-entry)
-  (toggle-read-only 'read-only))
+  (read-only-mode 'toggle))
+
+(defvar elscreen-gf-search-process nil)
 
 (defun elscreen-gf-mode-search-quit (&optional force)
   (interactive)
@@ -455,7 +453,7 @@ Key bindings:
 
 ;;; Fundamental functions shared among GNU grep/GNI ID Utils/cscope/GNU global
 
-(defsubst elscreen-gf-process-exclusive-p (process &optional noerror)
+(defun elscreen-gf-process-exclusive-p (process &optional noerror)
   (let ((exclusive-p (not (and (processp process)
                                (eq (process-status process) 'run)))))
     (when (not (or exclusive-p noerror))
@@ -536,7 +534,7 @@ Key bindings:
       (suppress-keymap minibuffer-map t)
       (define-key minibuffer-map "\C-m" 'undefined)
       (define-key minibuffer-map "\C-g" 'abort-recursive-edit)
-      (mapcar
+      (mapc
        (lambda (option-def)
          (define-key minibuffer-map (car option-def) 'self-insert-and-exit))
        option-defs)
@@ -547,7 +545,6 @@ Key bindings:
            option-defs)
         (kill-buffer candidate-buffer)))))
 
-(defvar elscreen-gf-search-process nil)
 (defsubst elscreen-gf-run-search-command (command-name pattern command directory line-parser)
   (put 'elscreen-gf-mode 'elscreen-gf-major-mode-thing
        (or (get major-mode 'elscreen-gf-major-mode-thing) 'word))
@@ -999,7 +996,7 @@ in the ElScreen-GF buffer."
         ;; invoke-point-buffer and moving point to invoke-point-position.
         (elscreen-goto (car invoke-point-buffer-screen-list))
         (select-window (get-buffer-window invoke-point-buffer))
-        (goto-char (invoke-point-position)))))))
+        (goto-char invoke-point-position))))))
 
 ;;; Help
 
