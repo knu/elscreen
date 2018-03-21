@@ -166,7 +166,7 @@ nil means don't display tabs."
   :group 'elscreen)
 
 (defface elscreen-tab-background-face
-  '((((type x w32 mac) (class color))
+  '((((type x w32 mac ns) (class color))
      :background "Gray50")
     (((class color))
      (:background "black")))
@@ -174,7 +174,7 @@ nil means don't display tabs."
   :group 'elscreen)
 
 (defface elscreen-tab-control-face
-  '((((type x w32 mac) (class color))
+  '((((type x w32 mac ns) (class color))
      (:background "white" :foreground "black" :underline "Gray50"))
     (((class color))
      (:background "white" :foreground "black" :underline t))
@@ -190,7 +190,7 @@ nil means don't display tabs."
   :group 'elscreen)
 
 (defface elscreen-tab-other-screen-face
-  '((((type x w32 mac) (class color))
+  '((((type x w32 mac ns) (class color))
      :background "Gray85" :foreground "Gray50")
     (((class color))
      (:background "blue" :foreground "black" :underline t)))
