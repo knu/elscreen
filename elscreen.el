@@ -5,6 +5,11 @@
 ;;              by Heikki T. Suopanki <suopanki@stekt1.oulu.fi>
 ;; Created:  June 22, 1996
 ;; Revised:  April 11, 2012 by Emanuel Evans
+;; Maintainer: Akinori MUSHA <knu@iDaemons.org>
+;; Homepage: https://github.com/knu/elscreen
+;; Version:  2018-03-21
+;; Package-Requires: ((emacs "24"))
+;; Keywords: window, convenience
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -41,7 +46,7 @@
 
 (declare-function iswitchb-read-buffer "iswitchb")
 
-(defconst elscreen-version "2012-09-21")
+(defconst elscreen-version "2018-03-21")
 
 (defgroup elscreen nil
   "ElScreen -- Screen Manager for Emacs"
