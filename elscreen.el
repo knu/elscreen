@@ -7,7 +7,7 @@
 ;; Revised:  April 11, 2012 by Emanuel Evans
 ;; Maintainer: Akinori MUSHA <knu@iDaemons.org>
 ;; Homepage: https://github.com/knu/elscreen
-;; Version:  2018-03-21
+;; Version:  20180321
 ;; Package-Requires: ((emacs "24"))
 ;; Keywords: window, convenience
 
@@ -46,7 +46,7 @@
 
 (declare-function iswitchb-read-buffer "iswitchb")
 
-(defconst elscreen-version "2018-03-21")
+(defconst elscreen-version "20180321")
 
 (defgroup elscreen nil
   "ElScreen -- Screen Manager for Emacs"
