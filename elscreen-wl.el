@@ -24,7 +24,6 @@
 
 (provide 'elscreen-wl)
 (require 'elscreen)
-(require 'wl)
 
 
 ;;; User Customizable Variables:
